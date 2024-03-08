@@ -1,0 +1,3 @@
+module ms_music
+
+go 1.21.5
