@@ -159,5 +159,14 @@ docker ps
 ```
 
 
-4. Change executbable 
-5. 
+4. Change executbable
+`chmod +x run-elastic.sh
+./run-elastic.sh`
+
+5. Check ElasticSearch is running
+
+`curl http://localhost:9200`  
+
+brew install colima
+colima start
+brew install docker docker-compose
