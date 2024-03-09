@@ -136,3 +136,28 @@ Possible Query Parameters:
 - `available_markets`: Filter tracks by available markets (ISO 3166-1 alpha-2 country codes).
 
 This README provides detailed endpoints for managing artists, albums, and tracks, along with search functionality with various query parameters for filtering results based on specific criteria.
+
+## Commands to use elasticsearch
+
+1. Create ElasticSearch Image
+`docker pull docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+`
+
+2. Create a Docker Volume `docker volume create elasticsearch
+`
+
+3. Create a new command to run ElasticSearch 
+
+```bash
+#! /bin/bash
+
+docker rm -f elasticsearch
+docker run -d --name elasticsearch -p 9200:9200 -e discovery.type=single-node \
+    -v elasticsearch:/usr/share/elasticsearch/data \
+    docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+docker ps
+```
+
+
+4. Change executbable 
+5. 
