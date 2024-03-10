@@ -2,11 +2,16 @@
 package application
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"ms_music/app/internal/handler"
 	"ms_music/app/internal/repository"
 	"ms_music/app/internal/service"
 	"net/http"
+	"net/url"
+	"os"
+	"strings"
 
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/go-chi/chi/v5"
@@ -24,6 +29,44 @@ type ConfigServerChi struct {
 	IdleTimeout int
 	// Port is the port where the server will listen to
 	Port int
+}
+
+// Func to get a new token from spotify
+
+func GetNewToken() {
+	clientID := os.Getenv("SPOTIFY_CLIENT_ID")
+	clientSecret := os.Getenv("SPOTIFY_CLIENT_SECRET")
+
+	data := url.Values{}
+	data.Set("grant_type", "client_credentials")
+	data.Set("client_id", clientID)
+	data.Set("client_secret", clientSecret)
+
+	req, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", strings.NewReader(data.Encode()))
+	if err != nil {
+		fmt.Println("Error creating HTTP request:", err)
+		return
+	}
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Println("Error making HTTP request:", err)
+		return
+	}
+
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println("Error reading HTTP response:", err)
+		return
+	}
+
+	var result map[string]interface{}
+	json.Unmarshal([]byte(body), &result)
+
+	fmt.Println("The Spotify token is updated successfully")
 }
 
 // NewConfigServerChi creates a new ConfigServerChi
