@@ -139,34 +139,8 @@ This README provides detailed endpoints for managing artists, albums, and tracks
 
 ## Commands to use elasticsearch
 
-1. Create ElasticSearch Image
-`docker pull docker.elastic.co/elasticsearch/elasticsearch:7.5.2
-`
-
-2. Create a Docker Volume `docker volume create elasticsearch
-`
-
-3. Create a new command to run ElasticSearch 
-
-```bash
-#! /bin/bash
-
-docker rm -f elasticsearch
-docker run -d --name elasticsearch -p 9200:9200 -e discovery.type=single-node \
-    -v elasticsearch:/usr/share/elasticsearch/data \
-    docker.elastic.co/elasticsearch/elasticsearch:7.5.2
-docker ps
-```
-
-
-4. Change executbable
-`chmod +x run-elastic.sh
-./run-elastic.sh`
-
-5. Check ElasticSearch is running
-
-`curl http://localhost:9200`  
-
-brew install colima
-colima start
-brew install docker docker-compose
+1. `colima start` 
+2. `docker build -t dockerfile .`
+3. `docker-compose up`
+4. `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}music_ms-elasticsearch-1 ``
+5.  Probar en postman
