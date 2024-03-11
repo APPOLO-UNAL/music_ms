@@ -136,3 +136,11 @@ Possible Query Parameters:
 - `available_markets`: Filter tracks by available markets (ISO 3166-1 alpha-2 country codes).
 
 This README provides detailed endpoints for managing artists, albums, and tracks, along with search functionality with various query parameters for filtering results based on specific criteria.
+
+## Commands to use elasticsearch
+
+1. `colima start` 
+2. `docker build -t dockerfile .`
+3. `docker-compose up`
+4. `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}music_ms-elasticsearch-1 ``
+5.  Probar en postman
