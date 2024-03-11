@@ -117,10 +117,29 @@ func (t TrackHandler) GetAllTrackByArtist() http.HandlerFunc {
 // Get all tracks by album
 func (t TrackHandler) GetAllTrackByAlbum() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		album := r.URL.Query().Get("album")
-		//tracks, err := t.TrackService.GetTrackByAlbum(album)
-		// handle response here
-		fmt.Println(album)
+		// Bussiness logic
+
+		album := r.URL.Query().Get("name")
+
+		if album == "" {
+			response.Error(w, http.StatusBadRequest, "Bad Request")
+			return
+		}
+
+		// Use the service to get all the tracks
+		trackList, err := t.TrackService.GetAllTracksByAlbum(album)
+
+		if err != nil {
+			switch err {
+			case internal.ErrTrackNotFound:
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, err.Error())
+			}
+			return
+		}
+		// Return the tracks
+		response.JSON(w, http.StatusOK, trackList)
 	}
 }
 

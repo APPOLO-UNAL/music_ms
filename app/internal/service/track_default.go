@@ -127,3 +127,61 @@ func (sv *TrackService) GetAllTracks() (interface{}, error) {
 	}
 	return trackList, nil
 }
+
+// Get all tracks by album
+
+func (sv *TrackService) GetAllTracksByAlbum(albumName string) (interface{}, error) {
+	// Bussiness logic ...
+
+	// Get all tracks from the database
+	trackList, err := sv.rp.GetAllTracksByAlbumElasticSearch("tracks", albumName)
+
+	// Check if there is an error
+	if err != nil {
+		switch err {
+		case internal.ErrBadRequest:
+			return nil, internal.ErrBadRequest
+		case internal.ErrTrackNotFound:
+			return nil, internal.ErrTrackNotFound
+		default:
+			return nil, internal.ErrInternalServerError
+		}
+	}
+
+	if len(trackList) == 0 {
+		// Use the API to get the tracks
+		fmt.Println("Entro aca")
+		album, err := sv.rp.GetAllTracksByAlbum(albumName)
+		fmt.Println("El album es: ", album)
+		if err != nil {
+			switch err {
+			case internal.ErrBadRequest:
+				return nil, internal.ErrBadRequest
+			default:
+				return nil, internal.ErrInternalServerError
+			}
+
+		}
+		// Save the tracks in the database
+		for _, track := range trackList {
+			err = sv.rp.IndexTrack("tracks", track)
+
+			if err != nil {
+				switch err {
+				case internal.ErrBadRequest:
+					return nil, internal.ErrBadRequest
+				case internal.ErrorIndexingDate:
+
+					return nil, internal.ErrInternalServerError
+
+				default:
+					return nil, internal.ErrInternalServerError
+				}
+			}
+
+		}
+
+		return album, nil
+	}
+	return trackList, nil
+}

@@ -91,6 +91,26 @@ type SpotifyResponse struct {
 			} `json:"external_urls"`
 		} `json:"items"`
 	} `json:"tracks"`
+	Albums struct {
+		Href  string `json:"href"`
+		Total int    `json:"total"`
+		Items []struct {
+			AlbumType    string `json:"album_type"`
+			TotalTracks  int    `json:"total_tracks"`
+			ExternalUrls struct {
+				Spotify string `json:"spotify"`
+			} `json:"external_urls"`
+			Href   string `json:"href"`
+			ID     string `json:"id"`
+			Images []struct {
+				Height int    `json:"height"`
+				Width  int    `json:"width"`
+				URL    string `json:"url"`
+			} `json:"images"`
+			ReleaseDate          string `json:"release_date"`
+			ReleaseDatePrecision string `json:"release_date_precision"`
+		} `json:"items"`
+	} `json:"albums"`
 }
 
 // NewTrackRepository returns a new TrackRepository
@@ -477,8 +497,10 @@ func (repo *Repository) GetTracksElasticSearch(indexName string, trackName strin
 	// Define the search query
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
-			"simple_query_string": map[string]interface{}{
-				"query": trackName,
+			"multi_match": map[string]interface{}{
+				"query":     trackName,
+				"fields":    []string{"tracks.items.album.name"},
+				"fuzziness": "AUTO",
 			},
 		},
 	}
@@ -680,4 +702,111 @@ func (repo *Repository) GetAllTracksElasticSearch(indexName string) ([]SpotifyRe
 	}
 
 	return tracks, nil
+}
+
+// GetAllTracksByAlbumElasticSearch retrieves all tracks from Elasticsearch by album
+func (repo *Repository) GetAllTracksByAlbumElasticSearch(indexName string, albumName string) ([]SpotifyResponse, error) {
+	var tracks []SpotifyResponse
+
+	// Define the search query
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"match_phrase": map[string]interface{}{
+				"tracks.items.album.name": map[string]interface{}{
+					"query": albumName,
+					"slop":  10,
+				},
+			},
+		},
+	}
+
+	// Convert the query to JSON
+	queryJSON, err := json.Marshal(query)
+	if err != nil {
+		return tracks, internal.ErrBadRequest
+	}
+
+	// Perform the search request
+	req := esapi.SearchRequest{
+		Index: []string{indexName},
+		Body:  bytes.NewReader(queryJSON),
+	}
+
+	res, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return tracks, err
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return tracks, internal.ErrTrackNotFound
+	}
+
+	// Parse the response
+	var r map[string]interface{}
+	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+		return tracks, internal.ErrInternalServerError
+	}
+
+	// Extract the tracks from the response
+	if hits, ok := r["hits"].(map[string]interface{}); ok {
+		if hitsArray, ok := hits["hits"].([]interface{}); ok {
+			for _, hit := range hitsArray {
+				if source, ok := hit.(map[string]interface{})["_source"]; ok {
+					var track SpotifyResponse
+					trackJSON, err := json.Marshal(source)
+					if err != nil {
+						return tracks, internal.ErrInternalServerError
+					}
+					if err := json.Unmarshal(trackJSON, &track); err != nil {
+						return tracks, internal.ErrInternalServerError
+					}
+					tracks = append(tracks, track)
+				}
+			}
+		}
+	}
+
+	return tracks, nil
+}
+
+// GetAllTracksByAlbum retrieves all tracks from Spotify by album
+func (repo *Repository) GetAllTracksByAlbum(albumName string) (SpotifyResponse, error) {
+	// Replace spaces with +
+	albumName = strings.ReplaceAll(albumName, " ", "+")
+
+	// URL request
+	url := "https://api.spotify.com/v1/search?q=" + albumName + "&type=album,track"
+
+	// Create the request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return SpotifyResponse{}, internal.ErrBadRequest
+	}
+
+	// Append the authorization header
+	req.Header.Add("Authorization", "Bearer "+repo.authToken)
+
+	// Make the request
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return SpotifyResponse{}, internal.ErrInternalServerError
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return SpotifyResponse{}, internal.ErrInternalServerError
+	}
+
+	// Deserialize the response body
+	var spotifyResponse SpotifyResponse
+	err = json.Unmarshal(body, &spotifyResponse)
+	if err != nil {
+		return SpotifyResponse{}, internal.ErrInternalServerError
+	}
+
+	// Return the response
+	return spotifyResponse, nil
 }
