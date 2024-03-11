@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ms_music/app/internal"
 	"ms_music/app/internal/service"
+	"ms_music/app/platform/web/response"
 	"net/http"
 )
 
@@ -36,6 +37,30 @@ func NewTrackHandler(trackService service.TrackService) TrackHandler {
 }
 
 // Get Methods
+// Get a track
+func (t TrackHandler) GetTrackByName() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		trackName := r.URL.Query().Get("name")
+
+		if trackName == "" {
+			response.Error(w, http.StatusBadRequest, "Bad Request")
+			return
+		}
+		track, err := t.TrackService.GetTrackByName(trackName)
+		if err != nil {
+			switch err {
+			default:
+				response.Error(w, http.StatusInternalServerError, err.Error())
+			}
+		}
+
+		response.JSON(w, http.StatusOK, track)
+		// handle response here
+		fmt.Println(trackName)
+	}
+
+}
+
 // Get all tracks
 func (t TrackHandler) GetAllTracks() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
