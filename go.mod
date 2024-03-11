@@ -8,6 +8,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/elastic/elastic-transport-go/v8 v8.4.0 // indirect
 	github.com/elastic/go-elasticsearch v0.0.0 // indirect
+	github.com/elastic/go-elasticsearch/v7 v7.17.10 // indirect
 	github.com/elastic/go-elasticsearch/v8 v8.12.1 // indirect
 	github.com/go-chi/chi/v5 v5.0.12 // indirect
 	github.com/go-logr/logr v1.3.0 // indirect
