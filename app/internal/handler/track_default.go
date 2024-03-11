@@ -65,21 +65,53 @@ func (t TrackHandler) GetTrackByName() http.HandlerFunc {
 }
 
 // Get all tracks
-func (t TrackHandler) GetAllTracks() http.HandlerFunc {
+func (h TrackHandler) GetAllTracks() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("GetAllTracks")
+		// Bussiness logic
+		// ...
+
+		// Use the service to get all the tracks
+		trackList, err := h.TrackService.GetAllTracks()
+
+		if err != nil {
+			switch err {
+			case internal.ErrTrackNotFound:
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, err.Error())
+			}
+			return
+		}
+		// Return the tracks
+		response.JSON(w, http.StatusOK, trackList)
 	}
 }
 
 // Get tracks by artist
 func (t TrackHandler) GetAllTrackByArtist() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		artist := r.URL.Query().Get("artist")
-		//tracks, err := t.TrackService.GetTrackByArtist(artist)
-		// handle response here
-		fmt.Println(artist)
-	}
+		trackName := r.URL.Query().Get("track")
+		artistName := r.URL.Query().Get("artist")
 
+		if trackName == "" || artistName == "" {
+			response.Error(w, http.StatusBadRequest, "Bad Request")
+			return
+		}
+
+		track, err := t.TrackService.GetTrackByArtistAndName(trackName, artistName)
+		if err != nil {
+			switch err {
+			default:
+				response.Error(w, http.StatusInternalServerError, err.Error())
+			}
+			return
+		}
+		if track == nil {
+			response.Error(w, http.StatusNotFound, "Track not found")
+			return
+		}
+		response.JSON(w, http.StatusOK, track)
+	}
 }
 
 // Get all tracks by album

@@ -152,7 +152,7 @@ func buildEndpointMusic(router *chi.Mux, hd handler.TrackHandler) {
 		// Endpoint to get the music
 		r.Get("/music/tracks", hdMusic.GetAllTracks())
 		// Endpoint to get the music by Artist
-		r.Get("/music/names/{id}", hdMusic.GetAllTrackByArtist())
+		r.Get("/music/tracks/artist", hdMusic.GetAllTrackByArtist())
 		// Endpoint to get the music by Album
 		r.Get("/music/album/{album}", hdMusic.GetAllTrackByAlbum())
 		// Endpoint to get the music by Genre

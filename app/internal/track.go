@@ -6,6 +6,8 @@ import (
 )
 
 var (
+	// ErrGetIndex is returned when ocurrs an error getting the index
+	ErrGetIndex = errors.New("error getting index")
 	// ErrMaxScore is returned when the track is not indexed
 	ErrMaxScore = errors.New("error max score")
 	// ErrorIndexingDate is returned when the track is not indexed
@@ -45,8 +47,7 @@ type Track struct {
 type TrackService interface {
 	// Get Methods
 	GetTrackByName(trackName string) (Track, error)                        // Get a track by name
-	GetTrack(id string) (Track, error)                                     // Get a track
-	GetTrackByArtist(artist string) ([]Track, error)                       // Get tracks by artist
+	GetTrackByNameAndArtistName(artist string) ([]Track, error)            // Get tracks by artist
 	GetTrackByAlbum(album string) ([]Track, error)                         // Get tracks by album
 	GetTrackByGenre(genre string) ([]Track, error)                         // Get tracks by genre
 	GetTrackByPopularity(popularity int) ([]Track, error)                  // Get tracks by popularity
@@ -73,13 +74,10 @@ type TrackHandler interface {
 	GetAllTrackByArtist() http.HandlerFunc // Get tracks by artist
 
 	// General Methods Get
-	GetAllTrackByAlbum() http.HandlerFunc           // Get all tracks by album
-	GetAllTrackByGenre() http.HandlerFunc           // Get all tracks by genre
-	GetAllTrackByPopularity() http.HandlerFunc      // Get all tracks by popularity
-	GetAllTrackByDuration() http.HandlerFunc        // Get all tracks by duration
-	GetAllTrackByReleaseDate() http.HandlerFunc     // Get all tracks by release date
-	GetAllTrackBetweenDuration() http.HandlerFunc   // Get all tracks between duration
-	GetAllTrackAvailableInMarket() http.HandlerFunc // Get all tracks available in market
+	GetAllTrackByAlbum() http.HandlerFunc       // Get all tracks by album
+	GetAllTrackByGenre() http.HandlerFunc       // Get all tracks by genre
+	GetAllTrackByPopularity() http.HandlerFunc  // Get all tracks by popularity
+	GetAllTrackByReleaseDate() http.HandlerFunc // Get all tracks by release date
 
 	// Search Methods
 	SearchTrack() http.HandlerFunc // Search tracks according some query parameters

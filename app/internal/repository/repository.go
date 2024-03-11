@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"ms_music/app/internal"
@@ -24,15 +25,37 @@ type Repository struct {
 
 // SpotifyResponse is the response from spotify
 type SpotifyResponse struct {
+	Artist struct {
+		Href  string `json:"href"`
+		Total int    `json:"total"`
+		Items []struct {
+			ExternalUrls struct {
+				Spotify string `json:"spotify"`
+			}
+			Followers struct {
+				Href  string `json:"href"`
+				Total int    `json:"total"`
+			} `json:"followers"`
+			Genres []string `json:"genres"`
+			Href   string   `json:"href"`
+			Images []struct {
+				Height int    `json:"height"`
+				Width  int    `json:"width"`
+				URL    string `json:"url"`
+			} `json:"images"`
+			Name       string `json:"name"`
+			Popularity int    `json:"popularity"`
+			URI        string `json:"uri"`
+		} `json:"items"`
+	} `json:"artists"`
 	Tracks struct {
 		Href  string `json:"href"`
 		Total int    `json:"total"`
 		Items []struct {
 			Album struct {
-				AlbumType        string   `json:"album_type"`
-				TotalTracks      int      `json:"total_tracks"`
-				AvailableMarkets []string `json:"available_markets"`
-				ExtUrls          struct {
+				AlbumType   string `json:"album_type"`
+				TotalTracks int    `json:"total_tracks"`
+				ExtUrls     struct {
 					Spotify string `json:"spotify"`
 				} `json:"external_urls"`
 				AlbumID string `json:"id"`
@@ -76,115 +99,179 @@ func NewTrackRepository(es *elasticsearch.Client) Repository {
 		es: es,
 		mapping: `{
 			"mappings": {
-			  "properties": {
-				"tracks": {
-				  "properties": {
-					"href": {
-					  "type": "text"
-					},
-					"total": {
-					  "type": "text"
-					},
-					"items": {
-					  "properties": {
-						"album": {
-						  "properties": {
-							"album_type": {
-							  "type": "text"
+				"properties": {
+					"artists": {
+						"properties": {
+							"href": {
+								"type": "text"
 							},
-							"total_tracks": {
-							  "type": "text"
+							"total": {
+								"type": "integer"
 							},
-							"available_markets": {
-							  "type": "text"
-							},
-							"external_urls": {
-							  "properties": {
-								"spotify": {
-								  "type": "text"
+							"items": {
+								"properties": {
+									"external_urls": {
+										"properties": {
+											"spotify": {
+												"type": "text"
+											}
+										}
+									},
+									"followers": {
+										"properties": {
+											"href": {
+												"type": "text"
+											},
+											"total": {
+												"type": "integer"
+											}
+										}
+									},
+									"genres": {
+										"type": "text"
+									},
+									"href": {
+										"type": "text"
+									},
+									"images": {
+										"properties": {
+											"height": {
+												"type": "integer"
+											},
+											"width": {
+												"type": "integer"
+											},
+											"url": {
+												"type": "text"
+											}
+										}
+									},
+									"name": {
+										"type": "text"
+									},
+									"popularity": {
+										"type": "integer"
+									},
+									"uri": {
+										"type": "text"
+									}
 								}
-							  }
-							},
-							"id": {
-							  "type": "text"
-							},
-							"imagesFr": {
-							  "properties": {
-								"height": {
-								  "type": "text"
-								},
-								"width": {
-								  "type": "text"
-								},
-								"url": {
-								  "type": "text"
-								}
-							  }
-							},
-							"name": {
-							  "type": "text"
-							},
-							"release_date": {
-							  "type": "text"
-							},
-							"release_date_precision": {
-							  "type": "text"
 							}
-						  }
-						},
-						"artists": {
-						  "properties": {
-							"external_urls": {
-							  "properties": {
-								"spotify": {
-								  "type": "text"
-								}
-							  }
-							},
-							"id": {
-							  "type": "text"
-							},
-							"name": {
-							  "type": "text"
-							},
-							"followers": {
-							  "properties": {
-								"href": {
-								  "type": "text"
-								},
-								"total": {
-								  "type": "text"
-								}
-							  }
-							},
-							"genres": {
-							  "type": "text"
-							},
-							"images": {
-							  "properties": {
-								"height": {
-								  "type": "text"
-								},
-								"width": {
-								  "type": "text"
-								},
-								"url": {
-								  "type": "text"
-								}
-							  }
-							},
-							"popularity": {
-							  "type": "text"
-							}
-						  }
 						}
-					  }
+					},
+					"tracks": {
+						"properties": {
+							"href": {
+								"type": "text"
+							},
+							"total": {
+								"type": "integer"
+							},
+							"items": {
+								"properties": {
+									"album": {
+										"properties": {
+											"album_type": {
+												"type": "text"
+											},
+											"total_tracks": {
+												"type": "integer"
+											},
+											"external_urls": {
+												"properties": {
+													"spotify": {
+														"type": "text"
+													}
+												}
+											},
+											"id": {
+												"type": "text"
+											},
+											"imagesFr": {
+												"properties": {
+													"height": {
+														"type": "integer"
+													},
+													"width": {
+														"type": "integer"
+													},
+													"url": {
+														"type": "text"
+													}
+												}
+											},
+											"name": {
+												"type": "text"
+											},
+											"release_date": {
+												"type": "date", // Cambiado de "text" a "date"
+												"format": "strict_date_optional_time||epoch_millis" // Asegúrate de que el formato de fecha coincide con tus datos
+											},
+											"release_date_precision": {
+												"type": "text"
+											}
+										}
+									},
+									"artists": {
+										"properties": {
+											"external_urls": {
+												"properties": {
+													"spotify": {
+														"type": "text"
+													}
+												}
+											},
+											"id": {
+												"type": "text"
+											},
+											"name": {
+												"type": "text"
+											},
+											"followers": {
+												"properties": {
+													"href": {
+														"type": "text"
+													},
+													"total": {
+														"type": "integer"
+													}
+												}
+											},
+											"genres": {
+												"type": "text"
+											},
+											"images": {
+												"properties": {
+													"height": {
+														"type": "integer"
+													},
+													"width": {
+														"type": "integer"
+													},
+													"url": {
+														"type": "text"
+													}
+												}
+											},
+											"popularity": {
+												"type": "integer"
+											}
+										}
+									},
+									"external_urls": {
+										"properties": {
+											"spotify": {
+												"type": "text"
+											}
+										}
+									}
+								}
+							}
+						}
 					}
-				  }
 				}
-			  }
 			}
-		  }`,
+		} `,
 		boolMapped: false,
 	}
 
@@ -316,7 +403,37 @@ func (repo *Repository) IndexTrack(indexName string, track SpotifyResponse) erro
 
 }
 
-// GetTrackByName returns a track by name
+func (repo *Repository) IndexTrackByArtist(indexName string, response SpotifyResponse) error {
+	// Convert the response to JSON
+	responseJSON, err := json.Marshal(response)
+	if err != nil {
+		return err
+	}
+
+	// Create an index request
+	req := esapi.IndexRequest{
+		Index:   indexName,
+		Body:    strings.NewReader(string(responseJSON)),
+		Refresh: "true",
+	}
+
+	// Perform the index request
+	res, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		fmt.Println(res.IsError())
+		fmt.Println(res.String())
+		return internal.ErrCreatingIndex
+	}
+
+	return nil
+}
+
+// GetTrackByName returns a track by name from Spotify
 func (repo *Repository) GetTrackByName(name string) (SpotifyResponse, error) {
 	// Create the request
 	req, err := http.NewRequest("GET", "https://api.spotify.com/v1/search", nil)
@@ -420,4 +537,147 @@ func (repo *Repository) GetTracksElasticSearch(indexName string, trackName strin
 	}
 
 	return tracks, maxScore, nil
+}
+
+// GetTrackByArtistElasticSearch retrieves tracks from Elasticsearch by artist and track name
+func (repo *Repository) GetTrackByArtistElasticSearch(indexName string, artistName string, trackName string) (SpotifyResponse, float64, error) {
+	var buf bytes.Buffer
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"bool": map[string]interface{}{
+				"must": []map[string]interface{}{
+					{
+						"match": map[string]interface{}{
+							"artists.items.name": artistName,
+						},
+					},
+					{
+						"match": map[string]interface{}{
+							"tracks.items.album.name": trackName,
+						},
+					},
+				},
+			},
+		},
+	}
+	if err := json.NewEncoder(&buf).Encode(query); err != nil {
+		return SpotifyResponse{}, 0, err
+	}
+
+	res, err := repo.es.Search(
+		repo.es.Search.WithContext(context.Background()),
+		repo.es.Search.WithIndex(indexName),
+		repo.es.Search.WithBody(&buf),
+		repo.es.Search.WithTrackTotalHits(true),
+		repo.es.Search.WithPretty(),
+	)
+	if err != nil {
+		return SpotifyResponse{}, 0, err
+	}
+	defer res.Body.Close()
+
+	var r map[string]interface{}
+	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+		return SpotifyResponse{}, 0, err
+	}
+
+	hits, ok := r["hits"].(map[string]interface{})
+	if !ok || hits == nil {
+		return SpotifyResponse{}, 0, fmt.Errorf("no hits from Elasticsearch")
+	}
+
+	maxScore, ok := hits["max_score"].(float64)
+	if !ok {
+		return SpotifyResponse{}, 0, fmt.Errorf("no max_score from Elasticsearch")
+	}
+
+	var spotifyResponses SpotifyResponse
+	if err := json.Unmarshal([]byte(hits["hits"].([]interface{})[0].(map[string]interface{})["_source"].(string)), &spotifyResponses); err != nil {
+		return SpotifyResponse{}, 0, err
+	}
+
+	return spotifyResponses, maxScore, nil
+}
+
+// GetTrackByArtist retrieves tracks from Spotify by artist and track name
+func (repo *Repository) GetTrackByArtist(artistName string, trackName string) (SpotifyResponse, error) {
+	req, err := http.NewRequest("GET", "https://api.spotify.com/v1/search", nil)
+	if err != nil {
+		return SpotifyResponse{}, err
+	}
+
+	q := req.URL.Query()
+	q.Add("q", artistName+" "+trackName)
+	q.Add("type", "track")
+	req.URL.RawQuery = q.Encode()
+
+	req.Header.Set("Authorization", "Bearer "+repo.authToken)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return SpotifyResponse{}, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return SpotifyResponse{}, err
+	}
+	var spotifyResponses SpotifyResponse
+	err = json.Unmarshal(body, &spotifyResponses)
+	if err != nil {
+		return SpotifyResponse{}, err
+	}
+
+	return spotifyResponses, nil
+}
+
+// GetAllTracksElasticSearch retrieves all tracks from Elasticsearch
+func (repo *Repository) GetAllTracksElasticSearch(indexName string) ([]SpotifyResponse, error) {
+
+	// Define the search query
+	query := `{
+        "query": {
+            "match_all": {}
+        }
+    }`
+
+	// Perform the search request
+	req := esapi.SearchRequest{
+		Index: []string{indexName},
+		Body:  strings.NewReader(query),
+	}
+
+	// Make the request
+	res, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform search request: %w", err)
+	}
+	defer res.Body.Close()
+
+	// Check if response is not OK
+	if res.IsError() {
+		return nil, fmt.Errorf("response status: %s", res.Status())
+	}
+
+	// Decode the response body
+	var response struct {
+		Hits struct {
+			Hits []struct {
+				Source SpotifyResponse `json:"_source"`
+			} `json:"hits"`
+		} `json:"hits"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	// Extract SpotifyResponse from hits
+	var tracks []SpotifyResponse
+	for _, hit := range response.Hits.Hits {
+		tracks = append(tracks, hit.Source)
+	}
+
+	return tracks, nil
 }
