@@ -1,11 +1,15 @@
 package repository
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
+	"ms_music/app/internal"
 	"net/http"
+	"strings"
 
 	"github.com/elastic/go-elasticsearch/esapi"
 	"github.com/elastic/go-elasticsearch/v7"
@@ -13,8 +17,10 @@ import (
 
 // Repository is the repository
 type Repository struct {
-	es        *elasticsearch.Client
-	authToken string
+	es         *elasticsearch.Client // Elasticsearch client
+	authToken  string                // Auth token for spotify
+	mapping    string                // Mapping for the track entity
+	boolMapped bool                  // Bool to check if the mapping is already done
 }
 
 // SpotifyResponse is the response from spotify
@@ -35,7 +41,7 @@ type SpotifyResponse struct {
 					Height int    `json:"height"`
 					Width  int    `json:"width"`
 					URL    string `json:"url"`
-				} `json:"images"`
+				} `json:"imagesFr"`
 				Name                 string `json:"name"`
 				ReleaseDate          string `json:"release_date"`
 				ReleaseDatePrecision string `json:"release_date_precision"`
@@ -58,6 +64,9 @@ type SpotifyResponse struct {
 				}
 				Popularity int `json:"popularity"`
 			} `json:"artists"`
+			ExternalUrls struct {
+				Spotify string `json:"spotify"`
+			} `json:"external_urls"`
 		} `json:"items"`
 	} `json:"tracks"`
 }
@@ -66,6 +75,118 @@ type SpotifyResponse struct {
 func NewTrackRepository(es *elasticsearch.Client) Repository {
 	repo := Repository{
 		es: es,
+		mapping: `{
+			"mappings": {
+			  "properties": {
+				"tracks": {
+				  "properties": {
+					"href": {
+					  "type": "text"
+					},
+					"total": {
+					  "type": "text"
+					},
+					"items": {
+					  "properties": {
+						"album": {
+						  "properties": {
+							"album_type": {
+							  "type": "text"
+							},
+							"total_tracks": {
+							  "type": "text"
+							},
+							"available_markets": {
+							  "type": "text"
+							},
+							"external_urls": {
+							  "properties": {
+								"spotify": {
+								  "type": "text"
+								}
+							  }
+							},
+							"id": {
+							  "type": "text"
+							},
+							"imagesFr": {
+							  "properties": {
+								"height": {
+								  "type": "text"
+								},
+								"width": {
+								  "type": "text"
+								},
+								"url": {
+								  "type": "text"
+								}
+							  }
+							},
+							"name": {
+							  "type": "text"
+							},
+							"release_date": {
+							  "type": "text"
+							},
+							"release_date_precision": {
+							  "type": "text"
+							}
+						  }
+						},
+						"artists": {
+						  "properties": {
+							"external_urls": {
+							  "properties": {
+								"spotify": {
+								  "type": "text"
+								}
+							  }
+							},
+							"id": {
+							  "type": "text"
+							},
+							"name": {
+							  "type": "text"
+							},
+							"followers": {
+							  "properties": {
+								"href": {
+								  "type": "text"
+								},
+								"total": {
+								  "type": "text"
+								}
+							  }
+							},
+							"genres": {
+							  "type": "text"
+							},
+							"images": {
+							  "properties": {
+								"height": {
+								  "type": "text"
+								},
+								"width": {
+								  "type": "text"
+								},
+								"url": {
+								  "type": "text"
+								}
+							  }
+							},
+							"popularity": {
+							  "type": "text"
+							}
+						  }
+						}
+					  }
+					}
+				  }
+				}
+			  }
+			}
+		  }`,
+		boolMapped: false,
 	}
 
 	repo.VerifyIndices()
@@ -104,6 +225,63 @@ func (repo *Repository) VerifyIndices() {
 	}
 }
 
+// CreateIndexWithMapping creates an index with the given mapping
+func (repo *Repository) CreateIndexWithMapping(indexName string) error {
+	req := esapi.IndicesCreateRequest{
+		Index: indexName,
+		Body:  strings.NewReader(repo.mapping),
+	}
+
+	res, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return fmt.Errorf("error creating index: %s", res.String())
+	}
+
+	return nil
+}
+
+// IndexTrack indexes a track
+func (repo *Repository) IndexTrack(indexName string, track SpotifyResponse) error {
+	if !repo.boolMapped {
+		err := repo.CreateIndexWithMapping("tracks")
+		if err != nil {
+			return internal.ErrCreateTrack
+		}
+		repo.boolMapped = true
+	}
+
+	// Convert the track to JSON
+	trackJSON, err := json.Marshal(track)
+	if err != nil {
+		return err
+	}
+
+	// Index the track
+	req := esapi.IndexRequest{
+		Index:   indexName,
+		Body:    bytes.NewReader(trackJSON),
+		Refresh: "true",
+	}
+
+	res, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return fmt.Errorf("error indexing track: %s", res.String())
+	}
+
+	return nil
+
+}
+
 // GetTrackByName returns a track by name
 func (repo *Repository) GetTrackByName(name string) (SpotifyResponse, error) {
 	// Create the request
@@ -123,7 +301,7 @@ func (repo *Repository) GetTrackByName(name string) (SpotifyResponse, error) {
 	// Make the request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return SpotifyResponse{}, err
+		return SpotifyResponse{}, internal.ErrBadRequest
 	}
 	defer res.Body.Close()
 	// Read the response
