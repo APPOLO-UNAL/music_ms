@@ -1,6 +1,20 @@
 package internal
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+)
+
+var (
+	// ErrCreateTrack is returned when the track is not created
+	ErrCreateTrack = errors.New("error creating track")
+	// ErrBadRequest is returned when the request is invalid
+	ErrBadRequest = errors.New("bad request")
+	// ErrTrackNotFound is returned when the track is not found
+	ErrTrackNotFound = errors.New("track not found")
+	// InternalServerError is returned when the track is not found
+	ErrInternalServerError = errors.New("internal server error")
+)
 
 // This script contains the logic to handle, service and repostory to  the track entity
 type Track struct {
