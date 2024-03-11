@@ -6,12 +6,24 @@ import (
 
 // This script contains the logic to handle, service and repostory to  the track entity
 type TrackService struct {
-	TrackRepository repository.TrackRepository
+	rp repository.Repository
 }
 
 // NewTrackService returns a new TrackService
-func NewTrackService(trackRepository repository.TrackRepository) TrackService {
+func NewTrackService(trackRepository repository.Repository) TrackService {
 	return TrackService{
-		TrackRepository: trackRepository,
+		rp: trackRepository,
 	}
+}
+
+// Get a track by name
+func (rp *TrackService) GetTrackByName(trackName string) (interface{}, error) {
+	// Bussiness logic ...
+
+	// Check if trackName is in the database
+	// ...
+	// If not use the API to get the track
+	track, err := rp.rp.GetTrackByName(trackName)
+
+	return track, err
 }
