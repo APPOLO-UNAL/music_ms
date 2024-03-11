@@ -6,6 +6,12 @@ import (
 )
 
 var (
+	// ErrMaxScore is returned when the track is not indexed
+	ErrMaxScore = errors.New("error max score")
+	// ErrorIndexingDate is returned when the track is not indexed
+	ErrorIndexingDate = errors.New("error indexing track")
+	//ErrCreatingIndex is returned when the index is not created
+	ErrCreatingIndex = errors.New("error creating index")
 	// ErrCreateTrack is returned when the track is not created
 	ErrCreateTrack = errors.New("error creating track")
 	// ErrBadRequest is returned when the request is invalid

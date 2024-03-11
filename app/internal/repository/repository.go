@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"ms_music/app/internal"
@@ -223,6 +222,7 @@ func (repo *Repository) VerifyIndices() {
 			}
 		}
 	}
+	repo.boolMapped = true
 }
 
 // CreateIndexWithMapping creates an index with the given mapping
@@ -239,14 +239,48 @@ func (repo *Repository) CreateIndexWithMapping(indexName string) error {
 	defer res.Body.Close()
 
 	if res.IsError() {
-		return fmt.Errorf("error creating index: %s", res.String())
+		return internal.ErrCreatingIndex
 	}
 
 	return nil
 }
 
+// Delete index
+func (repo *Repository) DeleteIndex(indexName string) error {
+	// Delete the index
+	deleteIndexReq := esapi.IndicesDeleteRequest{
+		Index: []string{indexName},
+	}
+
+	res, err := deleteIndexReq.Do(context.Background(), repo.es)
+	if err != nil {
+		return err
+	}
+	if res.IsError() {
+		return internal.ErrCreatingIndex
+	}
+
+	// Recreate the index with the correct mapping
+	createIndexReq := esapi.IndicesCreateRequest{
+		Index: indexName,
+		Body:  strings.NewReader(repo.mapping), // replace with your mapping
+	}
+
+	res, err = createIndexReq.Do(context.Background(), repo.es)
+	if err != nil {
+		return err
+	}
+	if res.IsError() {
+		return internal.ErrCreatingIndex
+	}
+	return nil
+}
+
 // IndexTrack indexes a track
 func (repo *Repository) IndexTrack(indexName string, track SpotifyResponse) error {
+	// Verify that the indices exist
+	repo.VerifyIndices()
+
 	if !repo.boolMapped {
 		err := repo.CreateIndexWithMapping("tracks")
 		if err != nil {
@@ -275,7 +309,7 @@ func (repo *Repository) IndexTrack(indexName string, track SpotifyResponse) erro
 	defer res.Body.Close()
 
 	if res.IsError() {
-		return fmt.Errorf("error indexing track: %s", res.String())
+		return internal.ErrorIndexingDate
 	}
 
 	return nil
@@ -317,4 +351,73 @@ func (repo *Repository) GetTrackByName(name string) (SpotifyResponse, error) {
 	}
 	// Print the response
 	return spotifyResponse, nil
+}
+
+// GetTracksElasticSearch retrieves tracks from Elasticsearch and returns the max_score
+func (repo *Repository) GetTracksElasticSearch(indexName string, trackName string) ([]SpotifyResponse, float64, error) {
+	var tracks []SpotifyResponse
+
+	// Define the search query
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"simple_query_string": map[string]interface{}{
+				"query": trackName,
+			},
+		},
+	}
+
+	// Convert the query to JSON
+	queryJSON, err := json.Marshal(query)
+	if err != nil {
+		return tracks, 0, internal.ErrBadRequest
+	}
+
+	// Perform the search request
+	req := esapi.SearchRequest{
+		Index: []string{indexName},
+		Body:  bytes.NewReader(queryJSON),
+	}
+
+	res, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return tracks, 0, err
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return tracks, 0, internal.ErrTrackNotFound
+	}
+
+	// Parse the response
+	var r map[string]interface{}
+	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+		return tracks, 0, internal.ErrInternalServerError
+	}
+
+	// Extract the max_score from the response
+	maxScore, ok := r["hits"].(map[string]interface{})["max_score"].(float64)
+	if !ok {
+		return tracks, 0, internal.ErrMaxScore
+	}
+
+	// Extract the tracks from the response
+	if hits, ok := r["hits"].(map[string]interface{}); ok {
+		if hitsArray, ok := hits["hits"].([]interface{}); ok {
+			for _, hit := range hitsArray {
+				if source, ok := hit.(map[string]interface{})["_source"]; ok {
+					var track SpotifyResponse
+					trackJSON, err := json.Marshal(source)
+					if err != nil {
+						return tracks, maxScore, internal.ErrInternalServerError
+					}
+					if err := json.Unmarshal(trackJSON, &track); err != nil {
+						return tracks, maxScore, internal.ErrInternalServerError
+					}
+					tracks = append(tracks, track)
+				}
+			}
+		}
+	}
+
+	return tracks, maxScore, nil
 }

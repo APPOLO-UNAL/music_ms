@@ -52,11 +52,14 @@ func (t TrackHandler) GetTrackByName() http.HandlerFunc {
 			default:
 				response.Error(w, http.StatusInternalServerError, err.Error())
 			}
+			return
 		}
-
+		if track == nil {
+			response.Error(w, http.StatusNotFound, "Track not found")
+		}
+		fmt.Println(track)
 		response.JSON(w, http.StatusOK, track)
-		// handle response here
-		fmt.Println(trackName)
+
 	}
 
 }
