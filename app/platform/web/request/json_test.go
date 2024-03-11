@@ -1,8 +1,8 @@
 package request_test
 
 import (
-	"app/platform/web/request"
 	"io"
+	"ms_music/app/platform/web/request"
 	"net/http"
 	"strings"
 	"testing"
@@ -22,7 +22,7 @@ func TestRequestJSON(t *testing.T) {
 		inputSchema := schema{}
 		inputRequest := http.Request{
 			Header: http.Header{"Content-Type": []string{"application/json"}},
-			Body: io.NopCloser(strings.NewReader(`{"name":"test"}`)),
+			Body:   io.NopCloser(strings.NewReader(`{"name":"test"}`)),
 		}
 		err := request.JSON(&inputRequest, &inputSchema)
 
@@ -42,7 +42,7 @@ func TestRequestJSON(t *testing.T) {
 		inputSchema := schema{}
 		inputRequest := http.Request{
 			Header: http.Header{"Content-Type": []string{"application/xml"}},
-			Body: io.NopCloser(strings.NewReader(`{"name":"test"}`)),
+			Body:   io.NopCloser(strings.NewReader(`{"name":"test"}`)),
 		}
 		err := request.JSON(&inputRequest, &inputSchema)
 
@@ -63,7 +63,7 @@ func TestRequestJSON(t *testing.T) {
 		inputSchema := schema{}
 		inputRequest := http.Request{
 			Header: http.Header{"Content-Type": []string{"application/json"}},
-			Body: io.NopCloser(strings.NewReader(`{"name":"test"`)),
+			Body:   io.NopCloser(strings.NewReader(`{"name":"test"`)),
 		}
 		err := request.JSON(&inputRequest, &inputSchema)
 
