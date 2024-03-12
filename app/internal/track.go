@@ -96,6 +96,8 @@ type SpotifyResponse struct {
 }
 
 var (
+	// ErrArtistNotFound is returned when the artist is not found
+	ErrArtistNotFound = errors.New("artist not found")
 	// ErrGetIndex is returned when ocurrs an error getting the index
 	ErrGetIndex = errors.New("error getting index")
 	// ErrMaxScore is returned when the track is not indexed

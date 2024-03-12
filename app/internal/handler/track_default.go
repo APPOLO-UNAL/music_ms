@@ -217,4 +217,31 @@ func (t TrackHandler) GetAllTrackByReleaseDate() http.HandlerFunc {
 		response.JSON(w, http.StatusOK, tracks)
 
 	}
+
+}
+
+// GetAllArtist returns all the artists
+func (t TrackHandler) GetAllArtist() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Bussiness logic
+		artistName := r.URL.Query().Get("name")
+		if artistName == "" {
+			response.Error(w, http.StatusBadRequest, "Bad Request")
+			return
+		}
+		// Use the service to get all the artists
+		artistList, err := t.TrackService.GetAllArtist(artistName)
+
+		if err != nil {
+			switch err {
+			case internal.ErrArtistNotFound:
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, err.Error())
+			}
+			return
+		}
+		// Return the artists
+		response.JSON(w, http.StatusOK, artistList)
+	}
 }

@@ -221,3 +221,22 @@ func (sv *TrackService) GetTrackByReleaseDate(start string, end string) (interfa
 	}
 	return album, nil
 }
+
+// GetAllArtist returns all artists
+func (sv *TrackService) GetAllArtist(name string) (interface{}, error) {
+	// Bussiness logic ...
+
+	// Get all tracks from the database
+	trackList, err := sv.rp.GetAllArtistElasticSearch("tracks", name)
+	if err != nil {
+		switch err {
+		case internal.ErrBadRequest:
+			return nil, internal.ErrBadRequest
+		case internal.ErrTrackNotFound:
+			return nil, internal.ErrTrackNotFound
+		default:
+			return nil, internal.ErrInternalServerError
+		}
+	}
+	return trackList, nil
+}
