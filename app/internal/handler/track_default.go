@@ -191,9 +191,30 @@ func (t TrackHandler) GetAllTrackByPopularity() http.HandlerFunc {
 // Get alls tracks by release date
 func (t TrackHandler) GetAllTrackByReleaseDate() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		releaseDate := r.URL.Query().Get("release_date")
-		//tracks, err := t.TrackService.GetTrackByReleaseDate(releaseDate)
-		// handle response here
-		fmt.Println(releaseDate)
+		// Bussiness Logic
+		start := r.URL.Query().Get("start")
+		end := r.URL.Query().Get("end")
+
+		if start == "" || end == "" {
+			response.Error(w, http.StatusBadRequest, "Bad Request")
+			return
+		}
+		// Use the service to get all the tracks
+
+		tracks, err := t.TrackService.GetTrackByReleaseDate(start, end)
+		fmt.Println("error", err)
+		if err != nil {
+			switch err {
+			case internal.ErrBadRequest:
+				response.Error(w, http.StatusBadRequest, err.Error())
+			case internal.ErrTrackNotFound:
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, err.Error())
+			}
+			return
+		}
+		response.JSON(w, http.StatusOK, tracks)
+
 	}
 }

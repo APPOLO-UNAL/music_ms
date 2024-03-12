@@ -152,9 +152,9 @@ func buildEndpointMusic(router *chi.Mux, hd handler.TrackHandler) {
 		// Endpoint to get the music by Album
 		r.Get("/music/album", hdMusic.GetAllTrackByAlbum())
 		// Endpoint to get the music by Popularity
-		r.Get("/music/popularity", hdMusic.GetAllTrackByPopularity())
+		r.Get("/music/artist/popularity", hdMusic.GetAllTrackByPopularity())
 		// Endpoint to get the music by Release Date
-		r.Get("/music/releasedate/{release_date}", hdMusic.GetAllTrackByReleaseDate())
+		r.Get("/music/releasedate", hdMusic.GetAllTrackByReleaseDate())
 
 	})
 }

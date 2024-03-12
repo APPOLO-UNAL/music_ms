@@ -25,29 +25,6 @@ type Repository struct {
 
 // SpotifyResponse is the response from spotify
 type SpotifyResponse struct {
-	Artist struct {
-		Href  string `json:"href"`
-		Total int    `json:"total"`
-		Items []struct {
-			ExternalUrls struct {
-				Spotify string `json:"spotify"`
-			}
-			Followers struct {
-				Href  string `json:"href"`
-				Total int    `json:"total"`
-			} `json:"followers"`
-			Genres []string `json:"genres"`
-			Href   string   `json:"href"`
-			Images []struct {
-				Height int    `json:"height"`
-				Width  int    `json:"width"`
-				URL    string `json:"url"`
-			} `json:"images"`
-			Name       string `json:"name"`
-			Popularity int    `json:"popularity"`
-			URI        string `json:"uri"`
-		} `json:"items"`
-	} `json:"artists"`
 	Tracks struct {
 		Href  string `json:"href"`
 		Total int    `json:"total"`
@@ -873,4 +850,65 @@ func (repo *Repository) GetAllTracksPopularityElasticSearch(minPopularity, maxPo
 	}
 
 	return tracks, nil
+}
+
+// GetAllTracksReleaseDateElasticSearch retrieves all tracks from Elasticsearch by release date
+func (repo *Repository) GetAllTracksReleaseDateElasticSearch(start string, end, indexName string) ([]SpotifyResponse, error) {
+	var r map[string]interface{}
+	var res []SpotifyResponse
+
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"bool": map[string]interface{}{
+				"filter": map[string]interface{}{
+					"range": map[string]interface{}{
+						"tracks.items.album.release_date": map[string]interface{}{
+							"gte": start,
+							"lte": end,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	queryJSON, err := json.Marshal(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal query: %w", err)
+	}
+
+	req := esapi.SearchRequest{
+		Index: []string{indexName},
+		Body:  bytes.NewReader(queryJSON),
+	}
+
+	resp, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("Error getting response: %s", resp.String())
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&r)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, hit := range r["hits"].(map[string]interface{})["hits"].([]interface{}) {
+		var sr SpotifyResponse
+		sourceBytes, err := json.Marshal(hit.(map[string]interface{})["_source"])
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal(sourceBytes, &sr)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, sr)
+	}
+
+	return res, nil
 }

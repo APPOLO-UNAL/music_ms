@@ -83,8 +83,8 @@ func (sv *TrackService) GetTrackByArtistAndName(artistName string, trackName str
 			}
 		}
 		// Save the track in the database
-		err = sv.rp.IndexTrack("tracks", track)
-		fmt.Println("El error es :", err)
+		err = sv.rp.IndexTrackByArtist("tracks", track)
+		fmt.Println("El error es :", err, "track", track)
 		if err != nil {
 			switch err {
 			case internal.ErrBadRequest:
@@ -189,6 +189,25 @@ func (sv *TrackService) GetTrackByPopularity(start int, end int) (interface{}, e
 	// Bussiness logic ...
 
 	album, err := sv.rp.GetAllTracksPopularityElasticSearch(start, end, "tracks")
+	if err != nil {
+		switch err {
+		case internal.ErrBadRequest:
+			return nil, internal.ErrBadRequest
+		case internal.ErrTrackNotFound:
+			return nil, internal.ErrTrackNotFound
+		default:
+			return nil, internal.ErrInternalServerError
+		}
+
+	}
+	return album, nil
+}
+
+// Get all tracks by releaseDate
+func (sv *TrackService) GetTrackByReleaseDate(start string, end string) (interface{}, error) {
+	// Bussiness logic ...
+
+	album, err := sv.rp.GetAllTracksReleaseDateElasticSearch(start, end, "tracks")
 	if err != nil {
 		switch err {
 		case internal.ErrBadRequest:
