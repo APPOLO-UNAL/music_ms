@@ -6,6 +6,7 @@ import (
 	"ms_music/app/internal/service"
 	"ms_music/app/platform/web/response"
 	"net/http"
+	"strconv"
 )
 
 type TrackJSONDefault struct {
@@ -57,7 +58,6 @@ func (t TrackHandler) GetTrackByName() http.HandlerFunc {
 		if track == nil {
 			response.Error(w, http.StatusNotFound, "Track not found")
 		}
-		fmt.Println(track)
 		response.JSON(w, http.StatusOK, track)
 
 	}
@@ -146,10 +146,45 @@ func (t TrackHandler) GetAllTrackByAlbum() http.HandlerFunc {
 // Get alls tracks by popularity
 func (t TrackHandler) GetAllTrackByPopularity() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		popularity := r.URL.Query().Get("popularity")
-		//tracks, err := t.TrackService.GetTrackByPopularity(popularity)
+		// Bussiness Logic
+		start := r.URL.Query().Get("start")
+		end := r.URL.Query().Get("end")
+
+		// Convert string to int
+		startInt, err := strconv.Atoi(start)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "Bad Request: start should be a number")
+			return
+		}
+
+		endInt, err := strconv.Atoi(end)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "Bad Request: end should be a number")
+			return
+		}
+
+		if startInt < 0 || endInt < 0 || endInt < startInt {
+			response.Error(w, http.StatusBadRequest, "Bad Request: start and end should be positive numbers")
+			return
+		}
+
+		// Use the service to get all the tracks
+
+		tracks, err := t.TrackService.GetTrackByPopularity(startInt, endInt)
+
+		if err != nil {
+			switch err {
+			case internal.ErrTrackNotFound:
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, err.Error())
+			}
+			return
+		}
+
 		// handle response here
-		fmt.Println(popularity)
+		response.JSON(w, http.StatusOK, tracks)
+		fmt.Println(start, end)
 	}
 }
 

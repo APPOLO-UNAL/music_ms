@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"ms_music/app/internal"
-	repository "ms_music/app/internal/repository"
+	"ms_music/app/internal/repository"
 )
 
 // This script contains the logic to handle, service and repostory to  the track entity
@@ -182,4 +182,23 @@ func (sv *TrackService) GetAllTracksByAlbum(albumName string) (interface{}, erro
 		return album, nil
 	}
 	return trackList, nil
+}
+
+// Get all tracks by popularity
+func (sv *TrackService) GetTrackByPopularity(start int, end int) (interface{}, error) {
+	// Bussiness logic ...
+
+	album, err := sv.rp.GetAllTracksPopularityElasticSearch(start, end, "tracks")
+	if err != nil {
+		switch err {
+		case internal.ErrBadRequest:
+			return nil, internal.ErrBadRequest
+		case internal.ErrTrackNotFound:
+			return nil, internal.ErrTrackNotFound
+		default:
+			return nil, internal.ErrInternalServerError
+		}
+
+	}
+	return album, nil
 }

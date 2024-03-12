@@ -5,6 +5,96 @@ import (
 	"net/http"
 )
 
+// SpotifyResponse is the response from spotify
+type SpotifyResponse struct {
+	Artist struct {
+		Href  string `json:"href"`
+		Total int    `json:"total"`
+		Items []struct {
+			ExternalUrls struct {
+				Spotify string `json:"spotify"`
+			}
+			Followers struct {
+				Href  string `json:"href"`
+				Total int    `json:"total"`
+			} `json:"followers"`
+			Genres []string `json:"genres"`
+			Href   string   `json:"href"`
+			Images []struct {
+				Height int    `json:"height"`
+				Width  int    `json:"width"`
+				URL    string `json:"url"`
+			} `json:"images"`
+			Name       string `json:"name"`
+			Popularity int    `json:"popularity"`
+			URI        string `json:"uri"`
+		} `json:"items"`
+	} `json:"artists"`
+	Tracks struct {
+		Href  string `json:"href"`
+		Total int    `json:"total"`
+		Items []struct {
+			Album struct {
+				AlbumType   string `json:"album_type"`
+				TotalTracks int    `json:"total_tracks"`
+				ExtUrls     struct {
+					Spotify string `json:"spotify"`
+				} `json:"external_urls"`
+				AlbumID string `json:"id"`
+				Images  []struct {
+					Height int    `json:"height"`
+					Width  int    `json:"width"`
+					URL    string `json:"url"`
+				} `json:"imagesFr"`
+				Name                 string `json:"name"`
+				ReleaseDate          string `json:"release_date"`
+				ReleaseDatePrecision string `json:"release_date_precision"`
+			} `json:"album"`
+			Artists []struct {
+				ExternalUrls struct {
+					Spotify string `json:"spotify"`
+				}
+				ArtistID  string `json:"id"`
+				Name      string `json:"name"`
+				Followers struct {
+					Href  string `json:"href"`
+					Total int    `json:"total"`
+				}
+				Genres []string `json:"genres"`
+				Images []struct {
+					Height int    `json:"height"`
+					Width  int    `json:"width"`
+					URL    string `json:"url"`
+				}
+				Popularity int `json:"popularity"`
+			} `json:"artists"`
+			ExternalUrls struct {
+				Spotify string `json:"spotify"`
+			} `json:"external_urls"`
+		} `json:"items"`
+	} `json:"tracks"`
+	Albums struct {
+		Href  string `json:"href"`
+		Total int    `json:"total"`
+		Items []struct {
+			AlbumType    string `json:"album_type"`
+			TotalTracks  int    `json:"total_tracks"`
+			ExternalUrls struct {
+				Spotify string `json:"spotify"`
+			} `json:"external_urls"`
+			Href   string `json:"href"`
+			ID     string `json:"id"`
+			Images []struct {
+				Height int    `json:"height"`
+				Width  int    `json:"width"`
+				URL    string `json:"url"`
+			} `json:"images"`
+			ReleaseDate          string `json:"release_date"`
+			ReleaseDatePrecision string `json:"release_date_precision"`
+		} `json:"items"`
+	} `json:"albums"`
+}
+
 var (
 	// ErrGetIndex is returned when ocurrs an error getting the index
 	ErrGetIndex = errors.New("error getting index")
@@ -46,11 +136,11 @@ type Track struct {
 // TrackService is the interface that provides track methods
 type TrackService interface {
 	// Get Methods
-	GetTrackByName(trackName string) (Track, error)                        // Get a track by name
-	GetTrackByNameAndArtistName(artist string) ([]Track, error)            // Get tracks by artist
-	GetTrackByAlbum(album string) ([]Track, error)                         // Get tracks by album
-	GetTrackByGenre(genre string) ([]Track, error)                         // Get tracks by genre
-	GetTrackByPopularity(popularity int) ([]Track, error)                  // Get tracks by popularity
+	GetTrackByName(trackName string) (Track, error)             // Get a track by name
+	GetTrackByNameAndArtistName(artist string) ([]Track, error) // Get tracks by artist
+	GetTrackByAlbum(album string) ([]Track, error)              // Get tracks by album
+	GetTrackByGenre(genre string) ([]Track, error)              // Get tracks by genre
+	GetAllTracksPopularityElasticSearch(minPopularity, maxPopularity int, indexName string) ([]SpotifyResponse, error)
 	GetTrackByDuration(duration int) ([]Track, error)                      // Get tracks by duration
 	GetTrackByReleaseDate(releaseDate string) ([]Track, error)             // Get tracks by release date
 	GetTrackBetweenDuration(duration1 int, duration2 int) ([]Track, error) // Get tracks between duration

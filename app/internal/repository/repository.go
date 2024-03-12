@@ -810,3 +810,67 @@ func (repo *Repository) GetAllTracksByAlbum(albumName string) (SpotifyResponse, 
 	// Return the response
 	return spotifyResponse, nil
 }
+
+// GetAllTracksPopularity retrieves all tracks popularity from Spotify
+func (repo *Repository) GetAllTracksPopularityElasticSearch(minPopularity, maxPopularity int, indexName string) ([]SpotifyResponse, error) {
+	// Define the query
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"bool": map[string]interface{}{
+				"filter": map[string]interface{}{
+					"range": map[string]interface{}{
+						"tracks.items.artists.popularity": map[string]interface{}{
+							"gte": minPopularity,
+							"lte": maxPopularity,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	// Convert the query to JSON
+	queryJSON, err := json.Marshal(query)
+	if err != nil {
+		return []SpotifyResponse{}, fmt.Errorf("failed to marshal query: %w", err)
+	}
+
+	// Perform the search request
+	req := esapi.SearchRequest{
+		Index: []string{indexName},
+		Body:  strings.NewReader(string(queryJSON)),
+	}
+
+	// Make the request
+	res, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return []SpotifyResponse{}, fmt.Errorf("failed to perform search request: %w", err)
+	}
+	defer res.Body.Close()
+
+	// Check if response is not OK
+	if res.IsError() {
+		return []SpotifyResponse{}, fmt.Errorf("response status: %s", res.Status())
+	}
+
+	// Decode the response body
+	var response struct {
+		Hits struct {
+			Hits []struct {
+				Source SpotifyResponse `json:"_source"`
+			} `json:"hits"`
+		} `json:"hits"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		return []SpotifyResponse{}, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	// Extract SpotifyResponse from hits
+	var tracks []SpotifyResponse
+	for _, hit := range response.Hits.Hits {
+		tracks = append(tracks, hit.Source)
+	}
+
+	return tracks, nil
+}
