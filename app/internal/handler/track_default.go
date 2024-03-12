@@ -143,16 +143,6 @@ func (t TrackHandler) GetAllTrackByAlbum() http.HandlerFunc {
 	}
 }
 
-// Get alls tracks by genre
-func (t TrackHandler) GetAllTrackByGenre() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		genre := r.URL.Query().Get("genre")
-		//tracks, err := t.TrackService.GetTrackByGenre(genre)
-		// handle response here
-		fmt.Println(genre)
-	}
-}
-
 // Get alls tracks by popularity
 func (t TrackHandler) GetAllTrackByPopularity() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -163,16 +153,6 @@ func (t TrackHandler) GetAllTrackByPopularity() http.HandlerFunc {
 	}
 }
 
-// Get alls tracks by duration
-func (t TrackHandler) GetAllTrackByDuration() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		duration := r.URL.Query().Get("duration")
-		//tracks, err := t.TrackService.GetTrackByDuration(duration)
-		// handle response here
-		fmt.Println(duration)
-	}
-}
-
 // Get alls tracks by release date
 func (t TrackHandler) GetAllTrackByReleaseDate() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -180,70 +160,5 @@ func (t TrackHandler) GetAllTrackByReleaseDate() http.HandlerFunc {
 		//tracks, err := t.TrackService.GetTrackByReleaseDate(releaseDate)
 		// handle response here
 		fmt.Println(releaseDate)
-	}
-}
-
-// Get alls tracks between duration
-func (t TrackHandler) GetAllTrackBetweenDuration() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		startDuration := r.URL.Query().Get("start_duration")
-		endDuration := r.URL.Query().Get("end_duration")
-		//tracks, err := t.TrackService.GetTrackBetweenDuration(startDuration, endDuration)
-		// handle response here
-		fmt.Println(startDuration, endDuration)
-	}
-}
-
-// Get alls tracks available in market
-func (t TrackHandler) GetAllTrackAvailableInMarket() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		market := r.URL.Query().Get("market")
-		//tracks, err := t.TrackService.GetTrackAvailableInMarket(market)
-		// handle response here
-		fmt.Println(market)
-	}
-}
-
-// Search Method
-// Search tracks
-func (t TrackHandler) SearchTrack() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		query := r.URL.Query().Get("query")
-		//tracks, err := t.TrackService.SearchTrack(query)
-		// handle response here
-		fmt.Println(query)
-	}
-}
-
-// Post Methods
-// Post track
-func (t TrackHandler) CreateTrack() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		track := TrackJSONDefault{}
-		//err := json.NewDecoder(r.Body).Decode(&track)
-		// handle response here
-		fmt.Println(track)
-	}
-}
-
-// Put Methods
-// Put track
-func (t TrackHandler) UpdateTrack() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		track := TrackJSONDefault{}
-		//err := json.NewDecoder(r.Body).Decode(&track)
-		// handle response here
-		fmt.Println(track)
-	}
-}
-
-// Delete Methods
-// Delete track
-func (t TrackHandler) DeleteTrack() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		track := TrackJSONDefault{}
-		//err := json.NewDecoder(r.Body).Decode(&track)
-		// handle response here
-		fmt.Println(track)
 	}
 }

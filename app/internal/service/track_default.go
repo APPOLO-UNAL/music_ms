@@ -147,12 +147,13 @@ func (sv *TrackService) GetAllTracksByAlbum(albumName string) (interface{}, erro
 			return nil, internal.ErrInternalServerError
 		}
 	}
+	// Unmarshall
 
+	//fmt.Println("album", trackList["albums"].(string))
 	if len(trackList) == 0 {
 		// Use the API to get the tracks
-		fmt.Println("Entro aca")
 		album, err := sv.rp.GetAllTracksByAlbum(albumName)
-		fmt.Println("El album es: ", album)
+		//fmt.Println("El album es: ", album)
 		if err != nil {
 			switch err {
 			case internal.ErrBadRequest:
@@ -162,23 +163,20 @@ func (sv *TrackService) GetAllTracksByAlbum(albumName string) (interface{}, erro
 			}
 
 		}
-		// Save the tracks in the database
-		for _, track := range trackList {
-			err = sv.rp.IndexTrack("tracks", track)
 
-			if err != nil {
-				switch err {
-				case internal.ErrBadRequest:
-					return nil, internal.ErrBadRequest
-				case internal.ErrorIndexingDate:
+		err = sv.rp.IndexTrackByArtist("tracks", album)
 
-					return nil, internal.ErrInternalServerError
+		if err != nil {
+			switch err {
+			case internal.ErrBadRequest:
+				return nil, internal.ErrBadRequest
+			case internal.ErrorIndexingDate:
 
-				default:
-					return nil, internal.ErrInternalServerError
-				}
+				return nil, internal.ErrInternalServerError
+
+			default:
+				return nil, internal.ErrInternalServerError
 			}
-
 		}
 
 		return album, nil
