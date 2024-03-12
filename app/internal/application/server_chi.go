@@ -97,7 +97,12 @@ func (s *ConfigServerChi) Run() (err error) {
 
 	// Depedencies
 	// - Database Connection
-	es, err := elasticsearch.NewDefaultClient()
+	cfg := elasticsearch.Config{
+		Addresses: []string{
+			"http://elasticsearch:9200",
+		},
+	}
+	es, err := elasticsearch.NewClient(cfg)
 	if err != nil {
 		panic(fmt.Sprintf("Error creating the client: %s", err))
 	}
@@ -120,7 +125,6 @@ func (s *ConfigServerChi) Run() (err error) {
 	hd := handler.NewTrackHandler(sv)
 
 	// Router
-
 	router := chi.NewRouter()
 
 	// Middlewares
@@ -130,8 +134,7 @@ func (s *ConfigServerChi) Run() (err error) {
 	// - Endpoints Music
 	buildEndpointMusic(router, hd)
 
-	err = http.ListenAndServe(s.Addr, router)
-
+	err = http.ListenAndServe(":8080", router)
 	return
 }
 
