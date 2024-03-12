@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"ms_music/app/internal"
-	repository "ms_music/app/internal/repository"
+	"ms_music/app/internal/repository"
 )
 
 // This script contains the logic to handle, service and repostory to  the track entity
@@ -83,8 +83,8 @@ func (sv *TrackService) GetTrackByArtistAndName(artistName string, trackName str
 			}
 		}
 		// Save the track in the database
-		err = sv.rp.IndexTrack("tracks", track)
-		fmt.Println("El error es :", err)
+		err = sv.rp.IndexTrackByArtist("tracks", track)
+		fmt.Println("El error es :", err, "track", track)
 		if err != nil {
 			switch err {
 			case internal.ErrBadRequest:
@@ -147,12 +147,13 @@ func (sv *TrackService) GetAllTracksByAlbum(albumName string) (interface{}, erro
 			return nil, internal.ErrInternalServerError
 		}
 	}
+	// Unmarshall
 
+	//fmt.Println("album", trackList["albums"].(string))
 	if len(trackList) == 0 {
 		// Use the API to get the tracks
-		fmt.Println("Entro aca")
 		album, err := sv.rp.GetAllTracksByAlbum(albumName)
-		fmt.Println("El album es: ", album)
+		//fmt.Println("El album es: ", album)
 		if err != nil {
 			switch err {
 			case internal.ErrBadRequest:
@@ -162,26 +163,80 @@ func (sv *TrackService) GetAllTracksByAlbum(albumName string) (interface{}, erro
 			}
 
 		}
-		// Save the tracks in the database
-		for _, track := range trackList {
-			err = sv.rp.IndexTrack("tracks", track)
 
-			if err != nil {
-				switch err {
-				case internal.ErrBadRequest:
-					return nil, internal.ErrBadRequest
-				case internal.ErrorIndexingDate:
+		err = sv.rp.IndexTrackByArtist("tracks", album)
 
-					return nil, internal.ErrInternalServerError
+		if err != nil {
+			switch err {
+			case internal.ErrBadRequest:
+				return nil, internal.ErrBadRequest
+			case internal.ErrorIndexingDate:
 
-				default:
-					return nil, internal.ErrInternalServerError
-				}
+				return nil, internal.ErrInternalServerError
+
+			default:
+				return nil, internal.ErrInternalServerError
 			}
-
 		}
 
 		return album, nil
+	}
+	return trackList, nil
+}
+
+// Get all tracks by popularity
+func (sv *TrackService) GetTrackByPopularity(start int, end int) (interface{}, error) {
+	// Bussiness logic ...
+
+	album, err := sv.rp.GetAllTracksPopularityElasticSearch(start, end, "tracks")
+	if err != nil {
+		switch err {
+		case internal.ErrBadRequest:
+			return nil, internal.ErrBadRequest
+		case internal.ErrTrackNotFound:
+			return nil, internal.ErrTrackNotFound
+		default:
+			return nil, internal.ErrInternalServerError
+		}
+
+	}
+	return album, nil
+}
+
+// Get all tracks by releaseDate
+func (sv *TrackService) GetTrackByReleaseDate(start string, end string) (interface{}, error) {
+	// Bussiness logic ...
+
+	album, err := sv.rp.GetAllTracksReleaseDateElasticSearch(start, end, "tracks")
+	if err != nil {
+		switch err {
+		case internal.ErrBadRequest:
+			return nil, internal.ErrBadRequest
+		case internal.ErrTrackNotFound:
+			return nil, internal.ErrTrackNotFound
+		default:
+			return nil, internal.ErrInternalServerError
+		}
+
+	}
+	return album, nil
+}
+
+// GetAllArtist returns all artists
+func (sv *TrackService) GetAllArtist(name string) (interface{}, error) {
+	// Bussiness logic ...
+
+	// Get all tracks from the database
+	trackList, err := sv.rp.GetAllArtistElasticSearch("tracks", name)
+	if err != nil {
+		switch err {
+		case internal.ErrBadRequest:
+			return nil, internal.ErrBadRequest
+		case internal.ErrTrackNotFound:
+			return nil, internal.ErrTrackNotFound
+		default:
+			return nil, internal.ErrInternalServerError
+		}
 	}
 	return trackList, nil
 }
