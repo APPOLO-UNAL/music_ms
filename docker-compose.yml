@@ -6,6 +6,9 @@ services:
       - "8080:8080"
     depends_on:
       - elasticsearch
+    environment:
+      - SPOTIFY_CLIENT_ID=4bfedb806e3d49db9eeecfe03fe22057
+      - SPOTIFY_CLIENT_SECRET=a7c80d1d7d664c058c876c6290fc04db
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
     environment:

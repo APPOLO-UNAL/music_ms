@@ -97,7 +97,12 @@ func (s *ConfigServerChi) Run() (err error) {
 
 	// Depedencies
 	// - Database Connection
-	es, err := elasticsearch.NewDefaultClient()
+	cfg := elasticsearch.Config{
+		Addresses: []string{
+			"http://elasticsearch:9200",
+		},
+	}
+	es, err := elasticsearch.NewClient(cfg)
 	if err != nil {
 		panic(fmt.Sprintf("Error creating the client: %s", err))
 	}
@@ -120,7 +125,6 @@ func (s *ConfigServerChi) Run() (err error) {
 	hd := handler.NewTrackHandler(sv)
 
 	// Router
-
 	router := chi.NewRouter()
 
 	// Middlewares
@@ -129,13 +133,8 @@ func (s *ConfigServerChi) Run() (err error) {
 	// Endpoints
 	// - Endpoints Music
 	buildEndpointMusic(router, hd)
-	// - Endpoints Artist
-	buildEndpointArtist(router, hd)
-	// - Endpoints Album
-	buildEndpointAlbum(router, hd)
 
-	err = http.ListenAndServe(s.Addr, router)
-
+	err = http.ListenAndServe(":8080", router)
 	return
 }
 
@@ -155,39 +154,12 @@ func buildEndpointMusic(router *chi.Mux, hd handler.TrackHandler) {
 		r.Get("/music/tracks/artist", hdMusic.GetAllTrackByArtist())
 		// Endpoint to get the music by Album
 		r.Get("/music/album", hdMusic.GetAllTrackByAlbum())
-		// Endpoint to get the music by Genre
-		r.Get("/music/genre/{genre}", hdMusic.GetAllTrackByGenre())
 		// Endpoint to get the music by Popularity
-		r.Get("/music/popularity/{genre}", hdMusic.GetAllTrackByPopularity())
-		// Endpoint to get the music by Duration
-		r.Get("/music/duration/{duration}", hdMusic.GetAllTrackByDuration())
+		r.Get("/music/artist/popularity", hdMusic.GetAllTrackByPopularity())
 		// Endpoint to get the music by Release Date
-		r.Get("/music/releasedate/{release_date}", hdMusic.GetAllTrackByReleaseDate())
-		// Endpoint to get the music between Duration
-		r.Get("/music/duration/{start_duration}/{end_duration}", hdMusic.GetAllTrackBetweenDuration())
-		// Endpoint to get the music available in a country
-		r.Get("/music/markets/{market}", hdMusic.GetAllTrackAvailableInMarket())
-
-		// Endpoints using query params
-		// Search
-		r.Get("/music/search", hdMusic.SearchTrack()) // Search by artist and album
-
-		// Create Method
-		r.Post("/music", hdMusic.CreateTrack())
-
-		// Update Method
-		r.Put("/music/{id}", hdMusic.UpdateTrack())
-
-		// Delete Method
-		r.Delete("/music/{id}", hdMusic.DeleteTrack())
+		r.Get("/music/releasedate", hdMusic.GetAllTrackByReleaseDate())
+		// Endpoint to get the information about the artist
+		r.Get("/music/artist", hdMusic.GetAllArtist())
 
 	})
-}
-
-// Function to build the endpoints of the artist
-func buildEndpointArtist(router *chi.Mux, hd handler.TrackHandler) {
-}
-
-// Function to build the endpoints of the album
-func buildEndpointAlbum(router *chi.Mux, hd handler.TrackHandler) {
 }

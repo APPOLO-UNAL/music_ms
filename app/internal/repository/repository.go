@@ -25,29 +25,6 @@ type Repository struct {
 
 // SpotifyResponse is the response from spotify
 type SpotifyResponse struct {
-	Artist struct {
-		Href  string `json:"href"`
-		Total int    `json:"total"`
-		Items []struct {
-			ExternalUrls struct {
-				Spotify string `json:"spotify"`
-			}
-			Followers struct {
-				Href  string `json:"href"`
-				Total int    `json:"total"`
-			} `json:"followers"`
-			Genres []string `json:"genres"`
-			Href   string   `json:"href"`
-			Images []struct {
-				Height int    `json:"height"`
-				Width  int    `json:"width"`
-				URL    string `json:"url"`
-			} `json:"images"`
-			Name       string `json:"name"`
-			Popularity int    `json:"popularity"`
-			URI        string `json:"uri"`
-		} `json:"items"`
-	} `json:"artists"`
 	Tracks struct {
 		Href  string `json:"href"`
 		Total int    `json:"total"`
@@ -809,4 +786,195 @@ func (repo *Repository) GetAllTracksByAlbum(albumName string) (SpotifyResponse, 
 
 	// Return the response
 	return spotifyResponse, nil
+}
+
+// GetAllTracksPopularity retrieves all tracks popularity from Spotify
+func (repo *Repository) GetAllTracksPopularityElasticSearch(minPopularity, maxPopularity int, indexName string) ([]SpotifyResponse, error) {
+	// Define the query
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"bool": map[string]interface{}{
+				"filter": map[string]interface{}{
+					"range": map[string]interface{}{
+						"tracks.items.artists.popularity": map[string]interface{}{
+							"gte": minPopularity,
+							"lte": maxPopularity,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	// Convert the query to JSON
+	queryJSON, err := json.Marshal(query)
+	if err != nil {
+		return []SpotifyResponse{}, fmt.Errorf("failed to marshal query: %w", err)
+	}
+
+	// Perform the search request
+	req := esapi.SearchRequest{
+		Index: []string{indexName},
+		Body:  strings.NewReader(string(queryJSON)),
+	}
+
+	// Make the request
+	res, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return []SpotifyResponse{}, fmt.Errorf("failed to perform search request: %w", err)
+	}
+	defer res.Body.Close()
+
+	// Check if response is not OK
+	if res.IsError() {
+		return []SpotifyResponse{}, fmt.Errorf("response status: %s", res.Status())
+	}
+
+	// Decode the response body
+	var response struct {
+		Hits struct {
+			Hits []struct {
+				Source SpotifyResponse `json:"_source"`
+			} `json:"hits"`
+		} `json:"hits"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		return []SpotifyResponse{}, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	// Extract SpotifyResponse from hits
+	var tracks []SpotifyResponse
+	for _, hit := range response.Hits.Hits {
+		tracks = append(tracks, hit.Source)
+	}
+
+	return tracks, nil
+}
+
+// GetAllTracksReleaseDateElasticSearch retrieves all tracks from Elasticsearch by release date
+func (repo *Repository) GetAllTracksReleaseDateElasticSearch(start string, end, indexName string) ([]SpotifyResponse, error) {
+	var r map[string]interface{}
+	var res []SpotifyResponse
+
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"bool": map[string]interface{}{
+				"filter": map[string]interface{}{
+					"range": map[string]interface{}{
+						"tracks.items.album.release_date": map[string]interface{}{
+							"gte": start,
+							"lte": end,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	queryJSON, err := json.Marshal(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal query: %w", err)
+	}
+
+	req := esapi.SearchRequest{
+		Index: []string{indexName},
+		Body:  bytes.NewReader(queryJSON),
+	}
+
+	resp, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("Error getting response: %s", resp.String())
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&r)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, hit := range r["hits"].(map[string]interface{})["hits"].([]interface{}) {
+		var sr SpotifyResponse
+		sourceBytes, err := json.Marshal(hit.(map[string]interface{})["_source"])
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal(sourceBytes, &sr)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, sr)
+	}
+
+	return res, nil
+}
+
+// GetAllArtistElasticSearch retrieves all artists from Elasticsearch by name
+func (repo *Repository) GetAllArtistElasticSearch(indexName string, nameArtist string) ([]SpotifyResponse, error) {
+	var artists []SpotifyResponse
+
+	// Define the search query
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"match_phrase": map[string]interface{}{
+				"tracks.items.artists.name": map[string]interface{}{
+					"query": nameArtist,
+					"slop":  10,
+				},
+			},
+		},
+	}
+
+	// Convert the query to JSON
+	queryJSON, err := json.Marshal(query)
+	if err != nil {
+		return artists, internal.ErrBadRequest
+	}
+
+	// Perform the search request
+	req := esapi.SearchRequest{
+		Index: []string{indexName},
+		Body:  bytes.NewReader(queryJSON),
+	}
+
+	res, err := req.Do(context.Background(), repo.es)
+	if err != nil {
+		return artists, err
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return artists, internal.ErrTrackNotFound
+	}
+
+	// Parse the response
+	var r map[string]interface{}
+	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+		return artists, internal.ErrInternalServerError
+	}
+
+	// Extract the artists from the response
+	if hits, ok := r["hits"].(map[string]interface{}); ok {
+		if hitsArray, ok := hits["hits"].([]interface{}); ok {
+			for _, hit := range hitsArray {
+				if source, ok := hit.(map[string]interface{})["_source"]; ok {
+					var artist SpotifyResponse
+					artistJSON, err := json.Marshal(source)
+					if err != nil {
+						return artists, internal.ErrInternalServerError
+					}
+					if err := json.Unmarshal(artistJSON, &artist); err != nil {
+						return artists, internal.ErrInternalServerError
+					}
+					artists = append(artists, artist)
+				}
+			}
+		}
+	}
+
+	return artists, nil
 }
