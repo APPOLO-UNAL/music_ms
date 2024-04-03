@@ -45,8 +45,9 @@ This README provides detailed endpoints for managing artists, albums, and tracks
 
 ## Commands to use elasticsearch
 
-1. `colima start` 
-2. `docker-compose up`
-3. `docker ps -a`
-4. `docker start <id del music_ms-app>`
-5.  Probar en postman
+1. `colima start`
+2. go to music_ms 
+3. `docker-compose up --build`
+4. `docker ps -a`
+5. `docker start <id del music_ms-app>`
+6.  Probar en postman

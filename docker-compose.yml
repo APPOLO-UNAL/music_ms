@@ -9,6 +9,8 @@ services:
     environment:
       - SPOTIFY_CLIENT_ID=4bfedb806e3d49db9eeecfe03fe22057
       - SPOTIFY_CLIENT_SECRET=a7c80d1d7d664c058c876c6290fc04db
+    networks:
+      - my-network
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
     environment:
@@ -17,5 +19,10 @@ services:
       - esdata:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
+    networks:
+      - my-network
 volumes:
   esdata:
+networks:
+  my-network:
+   driver: bridge
