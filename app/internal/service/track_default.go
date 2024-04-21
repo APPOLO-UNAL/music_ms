@@ -28,6 +28,7 @@ func (sv *TrackService) GetTrackByName(trackName string) (interface{}, error) {
 	fmt.Println("MaxScore: ", maxScore)
 	if errors.Is(err, internal.ErrTrackNotFound) || len(trackList) == 0 || maxScore < 3 { // If the track does not exist in the database use the API to get the track
 		fmt.Println("No existe en la base de datos o es menor a 8")
+		fmt.Println("paso por aca")
 		track, err := sv.rp.GetTrackByName(trackName)
 		if err != nil {
 			switch err {
@@ -37,6 +38,7 @@ func (sv *TrackService) GetTrackByName(trackName string) (interface{}, error) {
 				return nil, internal.ErrInternalServerError
 			}
 		}
+		fmt.Println("ya termino de pasar")
 		// Save the track in the database
 		err = sv.rp.IndexTrack("tracks", track)
 

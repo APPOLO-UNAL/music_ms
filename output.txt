@@ -1,0 +1,287 @@
+{
+  "tracks" : {
+    "href" : "https://api.spotify.com/v1/search?query=fantasias+&type=track&offset=0&limit=3",
+    "items" : [ {
+      "album" : {
+        "album_type" : "single",
+        "artists" : [ {
+          "external_urls" : {
+            "spotify" : "https://open.spotify.com/artist/1mcTU81TzQhprhouKaTkpq"
+          },
+          "href" : "https://api.spotify.com/v1/artists/1mcTU81TzQhprhouKaTkpq",
+          "id" : "1mcTU81TzQhprhouKaTkpq",
+          "name" : "Rauw Alejandro",
+          "type" : "artist",
+          "uri" : "spotify:artist:1mcTU81TzQhprhouKaTkpq"
+        }, {
+          "external_urls" : {
+            "spotify" : "https://open.spotify.com/artist/2R21vXR83lH98kGeO99Y66"
+          },
+          "href" : "https://api.spotify.com/v1/artists/2R21vXR83lH98kGeO99Y66",
+          "id" : "2R21vXR83lH98kGeO99Y66",
+          "name" : "Anuel AA",
+          "type" : "artist",
+          "uri" : "spotify:artist:2R21vXR83lH98kGeO99Y66"
+        }, {
+          "external_urls" : {
+            "spotify" : "https://open.spotify.com/artist/1GDbiv3spRmZ1XdM1jQbT7"
+          },
+          "href" : "https://api.spotify.com/v1/artists/1GDbiv3spRmZ1XdM1jQbT7",
+          "id" : "1GDbiv3spRmZ1XdM1jQbT7",
+          "name" : "NATTI NATASHA",
+          "type" : "artist",
+          "uri" : "spotify:artist:1GDbiv3spRmZ1XdM1jQbT7"
+        } ],
+        "available_markets" : [ "AR", "AU", "AT", "BE", "BO", "BR", "BG", "CA", "CL", "CO", "CR", "CY", "CZ", "DK", "DO", "DE", "EC", "EE", "SV", "FI", "FR", "GR", "GT", "HN", "HK", "HU", "IS", "IE", "IT", "LV", "LT", "LU", "MY", "MT", "MX", "NL", "NZ", "NI", "NO", "PA", "PY", "PE", "PH", "PL", "PT", "SG", "SK", "ES", "SE", "CH", "TW", "TR", "UY", "US", "GB", "AD", "LI", "MC", "ID", "JP", "TH", "VN", "RO", "IL", "ZA", "SA", "AE", "BH", "QA", "OM", "KW", "EG", "MA", "DZ", "TN", "LB", "JO", "PS", "IN", "BY", "KZ", "MD", "UA", "AL", "BA", "HR", "ME", "MK", "RS", "SI", "KR", "BD", "PK", "LK", "GH", "KE", "NG", "TZ", "UG", "AG", "AM", "BS", "BB", "BZ", "BT", "BW", "BF", "CV", "CW", "DM", "FJ", "GM", "GE", "GD", "GW", "GY", "HT", "JM", "KI", "LS", "LR", "MW", "MV", "ML", "MH", "FM", "NA", "NR", "NE", "PW", "PG", "PR", "WS", "SM", "ST", "SN", "SC", "SL", "SB", "KN", "LC", "VC", "SR", "TL", "TO", "TT", "TV", "VU", "AZ", "BN", "BI", "KH", "CM", "TD", "KM", "GQ", "SZ", "GA", "GN", "KG", "LA", "MO", "MR", "MN", "NP", "RW", "TG", "UZ", "ZW", "BJ", "MG", "MU", "MZ", "AO", "CI", "DJ", "ZM", "CD", "CG", "IQ", "LY", "TJ", "VE", "ET", "XK" ],
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/album/2kcKdEULKToIB701VWtOPr"
+        },
+        "href" : "https://api.spotify.com/v1/albums/2kcKdEULKToIB701VWtOPr",
+        "id" : "2kcKdEULKToIB701VWtOPr",
+        "images" : [ {
+          "height" : 640,
+          "url" : "https://i.scdn.co/image/ab67616d0000b273182a8d8f51a51dad8d12f522",
+          "width" : 640
+        }, {
+          "height" : 300,
+          "url" : "https://i.scdn.co/image/ab67616d00001e02182a8d8f51a51dad8d12f522",
+          "width" : 300
+        }, {
+          "height" : 64,
+          "url" : "https://i.scdn.co/image/ab67616d00004851182a8d8f51a51dad8d12f522",
+          "width" : 64
+        } ],
+        "name" : "Fantasias (Remix) [feat. Farruko & Lunay]",
+        "release_date" : "2020-03-06",
+        "release_date_precision" : "day",
+        "total_tracks" : 1,
+        "type" : "album",
+        "uri" : "spotify:album:2kcKdEULKToIB701VWtOPr"
+      },
+      "artists" : [ {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/1mcTU81TzQhprhouKaTkpq"
+        },
+        "href" : "https://api.spotify.com/v1/artists/1mcTU81TzQhprhouKaTkpq",
+        "id" : "1mcTU81TzQhprhouKaTkpq",
+        "name" : "Rauw Alejandro",
+        "type" : "artist",
+        "uri" : "spotify:artist:1mcTU81TzQhprhouKaTkpq"
+      }, {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/2R21vXR83lH98kGeO99Y66"
+        },
+        "href" : "https://api.spotify.com/v1/artists/2R21vXR83lH98kGeO99Y66",
+        "id" : "2R21vXR83lH98kGeO99Y66",
+        "name" : "Anuel AA",
+        "type" : "artist",
+        "uri" : "spotify:artist:2R21vXR83lH98kGeO99Y66"
+      }, {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/1GDbiv3spRmZ1XdM1jQbT7"
+        },
+        "href" : "https://api.spotify.com/v1/artists/1GDbiv3spRmZ1XdM1jQbT7",
+        "id" : "1GDbiv3spRmZ1XdM1jQbT7",
+        "name" : "NATTI NATASHA",
+        "type" : "artist",
+        "uri" : "spotify:artist:1GDbiv3spRmZ1XdM1jQbT7"
+      }, {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/329e4yvIujISKGKz1BZZbO"
+        },
+        "href" : "https://api.spotify.com/v1/artists/329e4yvIujISKGKz1BZZbO",
+        "id" : "329e4yvIujISKGKz1BZZbO",
+        "name" : "Farruko",
+        "type" : "artist",
+        "uri" : "spotify:artist:329e4yvIujISKGKz1BZZbO"
+      }, {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/47MpMsUfWtgyIIBEFOr4FE"
+        },
+        "href" : "https://api.spotify.com/v1/artists/47MpMsUfWtgyIIBEFOr4FE",
+        "id" : "47MpMsUfWtgyIIBEFOr4FE",
+        "name" : "Lunay",
+        "type" : "artist",
+        "uri" : "spotify:artist:47MpMsUfWtgyIIBEFOr4FE"
+      } ],
+      "available_markets" : [ "AR", "AU", "AT", "BE", "BO", "BR", "BG", "CA", "CL", "CO", "CR", "CY", "CZ", "DK", "DO", "DE", "EC", "EE", "SV", "FI", "FR", "GR", "GT", "HN", "HK", "HU", "IS", "IE", "IT", "LV", "LT", "LU", "MY", "MT", "MX", "NL", "NZ", "NI", "NO", "PA", "PY", "PE", "PH", "PL", "PT", "SG", "SK", "ES", "SE", "CH", "TW", "TR", "UY", "US", "GB", "AD", "LI", "MC", "ID", "JP", "TH", "VN", "RO", "IL", "ZA", "SA", "AE", "BH", "QA", "OM", "KW", "EG", "MA", "DZ", "TN", "LB", "JO", "PS", "IN", "BY", "KZ", "MD", "UA", "AL", "BA", "HR", "ME", "MK", "RS", "SI", "KR", "BD", "PK", "LK", "GH", "KE", "NG", "TZ", "UG", "AG", "AM", "BS", "BB", "BZ", "BT", "BW", "BF", "CV", "CW", "DM", "FJ", "GM", "GE", "GD", "GW", "GY", "HT", "JM", "KI", "LS", "LR", "MW", "MV", "ML", "MH", "FM", "NA", "NR", "NE", "PW", "PG", "PR", "WS", "SM", "ST", "SN", "SC", "SL", "SB", "KN", "LC", "VC", "SR", "TL", "TO", "TT", "TV", "VU", "AZ", "BN", "BI", "KH", "CM", "TD", "KM", "GQ", "SZ", "GA", "GN", "KG", "LA", "MO", "MR", "MN", "NP", "RW", "TG", "UZ", "ZW", "BJ", "MG", "MU", "MZ", "AO", "CI", "DJ", "ZM", "CD", "CG", "IQ", "LY", "TJ", "VE", "ET", "XK" ],
+      "disc_number" : 1,
+      "duration_ms" : 267241,
+      "explicit" : false,
+      "external_ids" : {
+        "isrc" : "QZHN22000001"
+      },
+      "external_urls" : {
+        "spotify" : "https://open.spotify.com/track/0A37XY67wSdGqkGjtfW6aV"
+      },
+      "href" : "https://api.spotify.com/v1/tracks/0A37XY67wSdGqkGjtfW6aV",
+      "id" : "0A37XY67wSdGqkGjtfW6aV",
+      "is_local" : false,
+      "name" : "Fantasias - Remix",
+      "popularity" : 62,
+      "preview_url" : "https://p.scdn.co/mp3-preview/1745e975664c7e13c820c21717e98112feab48a0?cid=4bfedb806e3d49db9eeecfe03fe22057",
+      "track_number" : 1,
+      "type" : "track",
+      "uri" : "spotify:track:0A37XY67wSdGqkGjtfW6aV"
+    }, {
+      "album" : {
+        "album_type" : "single",
+        "artists" : [ {
+          "external_urls" : {
+            "spotify" : "https://open.spotify.com/artist/1mcTU81TzQhprhouKaTkpq"
+          },
+          "href" : "https://api.spotify.com/v1/artists/1mcTU81TzQhprhouKaTkpq",
+          "id" : "1mcTU81TzQhprhouKaTkpq",
+          "name" : "Rauw Alejandro",
+          "type" : "artist",
+          "uri" : "spotify:artist:1mcTU81TzQhprhouKaTkpq"
+        }, {
+          "external_urls" : {
+            "spotify" : "https://open.spotify.com/artist/329e4yvIujISKGKz1BZZbO"
+          },
+          "href" : "https://api.spotify.com/v1/artists/329e4yvIujISKGKz1BZZbO",
+          "id" : "329e4yvIujISKGKz1BZZbO",
+          "name" : "Farruko",
+          "type" : "artist",
+          "uri" : "spotify:artist:329e4yvIujISKGKz1BZZbO"
+        } ],
+        "available_markets" : [ "AR", "AU", "AT", "BE", "BO", "BR", "BG", "CA", "CL", "CO", "CR", "CY", "CZ", "DK", "DO", "DE", "EC", "EE", "SV", "FI", "FR", "GR", "GT", "HN", "HK", "HU", "IS", "IE", "IT", "LV", "LT", "LU", "MY", "MT", "MX", "NL", "NZ", "NI", "NO", "PA", "PY", "PE", "PH", "PL", "PT", "SG", "SK", "ES", "SE", "CH", "TW", "TR", "UY", "US", "GB", "AD", "LI", "MC", "ID", "JP", "TH", "VN", "RO", "IL", "ZA", "SA", "AE", "BH", "QA", "OM", "KW", "EG", "MA", "DZ", "TN", "LB", "JO", "PS", "IN", "BY", "KZ", "MD", "UA", "AL", "BA", "HR", "ME", "MK", "RS", "SI", "KR", "BD", "PK", "LK", "GH", "KE", "NG", "TZ", "UG", "AG", "AM", "BS", "BB", "BZ", "BT", "BW", "BF", "CV", "CW", "DM", "FJ", "GM", "GE", "GD", "GW", "GY", "HT", "JM", "KI", "LS", "LR", "MW", "MV", "ML", "MH", "FM", "NA", "NR", "NE", "PW", "PG", "PR", "WS", "SM", "ST", "SN", "SC", "SL", "SB", "KN", "LC", "VC", "SR", "TL", "TO", "TT", "TV", "VU", "AZ", "BN", "BI", "KH", "CM", "TD", "KM", "GQ", "SZ", "GA", "GN", "KG", "LA", "MO", "MR", "MN", "NP", "RW", "TG", "UZ", "ZW", "BJ", "MG", "MU", "MZ", "AO", "CI", "DJ", "ZM", "CD", "CG", "IQ", "LY", "TJ", "VE", "ET", "XK" ],
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/album/1Flcx9eDuv7pTGM9nJBmGL"
+        },
+        "href" : "https://api.spotify.com/v1/albums/1Flcx9eDuv7pTGM9nJBmGL",
+        "id" : "1Flcx9eDuv7pTGM9nJBmGL",
+        "images" : [ {
+          "height" : 640,
+          "url" : "https://i.scdn.co/image/ab67616d0000b273ca6183e9d0bfb66f996eefce",
+          "width" : 640
+        }, {
+          "height" : 300,
+          "url" : "https://i.scdn.co/image/ab67616d00001e02ca6183e9d0bfb66f996eefce",
+          "width" : 300
+        }, {
+          "height" : 64,
+          "url" : "https://i.scdn.co/image/ab67616d00004851ca6183e9d0bfb66f996eefce",
+          "width" : 64
+        } ],
+        "name" : "Fantasias",
+        "release_date" : "2019-08-29",
+        "release_date_precision" : "day",
+        "total_tracks" : 1,
+        "type" : "album",
+        "uri" : "spotify:album:1Flcx9eDuv7pTGM9nJBmGL"
+      },
+      "artists" : [ {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/1mcTU81TzQhprhouKaTkpq"
+        },
+        "href" : "https://api.spotify.com/v1/artists/1mcTU81TzQhprhouKaTkpq",
+        "id" : "1mcTU81TzQhprhouKaTkpq",
+        "name" : "Rauw Alejandro",
+        "type" : "artist",
+        "uri" : "spotify:artist:1mcTU81TzQhprhouKaTkpq"
+      }, {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/329e4yvIujISKGKz1BZZbO"
+        },
+        "href" : "https://api.spotify.com/v1/artists/329e4yvIujISKGKz1BZZbO",
+        "id" : "329e4yvIujISKGKz1BZZbO",
+        "name" : "Farruko",
+        "type" : "artist",
+        "uri" : "spotify:artist:329e4yvIujISKGKz1BZZbO"
+      } ],
+      "available_markets" : [ "AR", "AU", "AT", "BE", "BO", "BR", "BG", "CA", "CL", "CO", "CR", "CY", "CZ", "DK", "DO", "DE", "EC", "EE", "SV", "FI", "FR", "GR", "GT", "HN", "HK", "HU", "IS", "IE", "IT", "LV", "LT", "LU", "MY", "MT", "MX", "NL", "NZ", "NI", "NO", "PA", "PY", "PE", "PH", "PL", "PT", "SG", "SK", "ES", "SE", "CH", "TW", "TR", "UY", "US", "GB", "AD", "LI", "MC", "ID", "JP", "TH", "VN", "RO", "IL", "ZA", "SA", "AE", "BH", "QA", "OM", "KW", "EG", "MA", "DZ", "TN", "LB", "JO", "PS", "IN", "BY", "KZ", "MD", "UA", "AL", "BA", "HR", "ME", "MK", "RS", "SI", "KR", "BD", "PK", "LK", "GH", "KE", "NG", "TZ", "UG", "AG", "AM", "BS", "BB", "BZ", "BT", "BW", "BF", "CV", "CW", "DM", "FJ", "GM", "GE", "GD", "GW", "GY", "HT", "JM", "KI", "LS", "LR", "MW", "MV", "ML", "MH", "FM", "NA", "NR", "NE", "PW", "PG", "PR", "WS", "SM", "ST", "SN", "SC", "SL", "SB", "KN", "LC", "VC", "SR", "TL", "TO", "TT", "TV", "VU", "AZ", "BN", "BI", "KH", "CM", "TD", "KM", "GQ", "SZ", "GA", "GN", "KG", "LA", "MO", "MR", "MN", "NP", "RW", "TG", "UZ", "ZW", "BJ", "MG", "MU", "MZ", "AO", "CI", "DJ", "ZM", "CD", "CG", "IQ", "LY", "TJ", "VE", "ET", "XK" ],
+      "disc_number" : 1,
+      "duration_ms" : 199711,
+      "explicit" : false,
+      "external_ids" : {
+        "isrc" : "QM6P41989279"
+      },
+      "external_urls" : {
+        "spotify" : "https://open.spotify.com/track/6mAN61JH0dzyZpWslS11jy"
+      },
+      "href" : "https://api.spotify.com/v1/tracks/6mAN61JH0dzyZpWslS11jy",
+      "id" : "6mAN61JH0dzyZpWslS11jy",
+      "is_local" : false,
+      "name" : "Fantasias",
+      "popularity" : 74,
+      "preview_url" : "https://p.scdn.co/mp3-preview/8ee229f0c6b9bcd653bda8bd1c5c245b91a32d00?cid=4bfedb806e3d49db9eeecfe03fe22057",
+      "track_number" : 1,
+      "type" : "track",
+      "uri" : "spotify:track:6mAN61JH0dzyZpWslS11jy"
+    }, {
+      "album" : {
+        "album_type" : "album",
+        "artists" : [ {
+          "external_urls" : {
+            "spotify" : "https://open.spotify.com/artist/0Q8NcsJwoCbZOHHW63su5S"
+          },
+          "href" : "https://api.spotify.com/v1/artists/0Q8NcsJwoCbZOHHW63su5S",
+          "id" : "0Q8NcsJwoCbZOHHW63su5S",
+          "name" : "Mora",
+          "type" : "artist",
+          "uri" : "spotify:artist:0Q8NcsJwoCbZOHHW63su5S"
+        } ],
+        "available_markets" : [ "AR", "AU", "AT", "BE", "BO", "BR", "BG", "CA", "CL", "CO", "CR", "CY", "CZ", "DK", "DO", "DE", "EC", "EE", "SV", "FI", "FR", "GR", "GT", "HN", "HK", "HU", "IS", "IE", "IT", "LV", "LT", "LU", "MY", "MT", "MX", "NL", "NZ", "NI", "NO", "PA", "PY", "PE", "PH", "PL", "PT", "SG", "SK", "ES", "SE", "CH", "TW", "TR", "UY", "US", "GB", "AD", "LI", "MC", "ID", "JP", "TH", "VN", "RO", "IL", "ZA", "SA", "AE", "BH", "QA", "OM", "KW", "EG", "MA", "DZ", "TN", "LB", "JO", "PS", "IN", "BY", "KZ", "MD", "UA", "AL", "BA", "HR", "ME", "MK", "RS", "SI", "KR", "BD", "PK", "LK", "GH", "KE", "NG", "TZ", "UG", "AG", "AM", "BS", "BB", "BZ", "BT", "BW", "BF", "CV", "CW", "DM", "FJ", "GM", "GE", "GD", "GW", "GY", "HT", "JM", "KI", "LS", "LR", "MW", "MV", "ML", "MH", "FM", "NA", "NR", "NE", "PW", "PG", "PR", "WS", "SM", "ST", "SN", "SC", "SL", "SB", "KN", "LC", "VC", "SR", "TL", "TO", "TT", "TV", "VU", "AZ", "BN", "BI", "KH", "CM", "TD", "KM", "GQ", "SZ", "GA", "GN", "KG", "LA", "MO", "MR", "MN", "NP", "RW", "TG", "UZ", "ZW", "BJ", "MG", "MU", "MZ", "AO", "CI", "DJ", "ZM", "CD", "CG", "IQ", "LY", "TJ", "VE", "ET", "XK" ],
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/album/0SoJvPHbKVhvmVJOp3kzp3"
+        },
+        "href" : "https://api.spotify.com/v1/albums/0SoJvPHbKVhvmVJOp3kzp3",
+        "id" : "0SoJvPHbKVhvmVJOp3kzp3",
+        "images" : [ {
+          "height" : 640,
+          "url" : "https://i.scdn.co/image/ab67616d0000b2734cc96ed1e38fa517608c2fb0",
+          "width" : 640
+        }, {
+          "height" : 300,
+          "url" : "https://i.scdn.co/image/ab67616d00001e024cc96ed1e38fa517608c2fb0",
+          "width" : 300
+        }, {
+          "height" : 64,
+          "url" : "https://i.scdn.co/image/ab67616d000048514cc96ed1e38fa517608c2fb0",
+          "width" : 64
+        } ],
+        "name" : "ESTRELLA",
+        "release_date" : "2023-08-28",
+        "release_date_precision" : "day",
+        "total_tracks" : 15,
+        "type" : "album",
+        "uri" : "spotify:album:0SoJvPHbKVhvmVJOp3kzp3"
+      },
+      "artists" : [ {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/0Q8NcsJwoCbZOHHW63su5S"
+        },
+        "href" : "https://api.spotify.com/v1/artists/0Q8NcsJwoCbZOHHW63su5S",
+        "id" : "0Q8NcsJwoCbZOHHW63su5S",
+        "name" : "Mora",
+        "type" : "artist",
+        "uri" : "spotify:artist:0Q8NcsJwoCbZOHHW63su5S"
+      } ],
+      "available_markets" : [ "AR", "AU", "AT", "BE", "BO", "BR", "BG", "CA", "CL", "CO", "CR", "CY", "CZ", "DK", "DO", "DE", "EC", "EE", "SV", "FI", "FR", "GR", "GT", "HN", "HK", "HU", "IS", "IE", "IT", "LV", "LT", "LU", "MY", "MT", "MX", "NL", "NZ", "NI", "NO", "PA", "PY", "PE", "PH", "PL", "PT", "SG", "SK", "ES", "SE", "CH", "TW", "TR", "UY", "US", "GB", "AD", "LI", "MC", "ID", "JP", "TH", "VN", "RO", "IL", "ZA", "SA", "AE", "BH", "QA", "OM", "KW", "EG", "MA", "DZ", "TN", "LB", "JO", "PS", "IN", "BY", "KZ", "MD", "UA", "AL", "BA", "HR", "ME", "MK", "RS", "SI", "KR", "BD", "PK", "LK", "GH", "KE", "NG", "TZ", "UG", "AG", "AM", "BS", "BB", "BZ", "BT", "BW", "BF", "CV", "CW", "DM", "FJ", "GM", "GE", "GD", "GW", "GY", "HT", "JM", "KI", "LS", "LR", "MW", "MV", "ML", "MH", "FM", "NA", "NR", "NE", "PW", "PG", "PR", "WS", "SM", "ST", "SN", "SC", "SL", "SB", "KN", "LC", "VC", "SR", "TL", "TO", "TT", "TV", "VU", "AZ", "BN", "BI", "KH", "CM", "TD", "KM", "GQ", "SZ", "GA", "GN", "KG", "LA", "MO", "MR", "MN", "NP", "RW", "TG", "UZ", "ZW", "BJ", "MG", "MU", "MZ", "AO", "CI", "DJ", "ZM", "CD", "CG", "IQ", "LY", "TJ", "VE", "ET", "XK" ],
+      "disc_number" : 1,
+      "duration_ms" : 191847,
+      "explicit" : true,
+      "external_ids" : {
+        "isrc" : "QMDA62341725"
+      },
+      "external_urls" : {
+        "spotify" : "https://open.spotify.com/track/2v1EKQQn4UYC6qB13Vphaf"
+      },
+      "href" : "https://api.spotify.com/v1/tracks/2v1EKQQn4UYC6qB13Vphaf",
+      "id" : "2v1EKQQn4UYC6qB13Vphaf",
+      "is_local" : false,
+      "name" : "FANTASÍAS",
+      "popularity" : 64,
+      "preview_url" : "https://p.scdn.co/mp3-preview/213646ae737ae38ba0150ab2b764aa6b153acdb2?cid=4bfedb806e3d49db9eeecfe03fe22057",
+      "track_number" : 6,
+      "type" : "track",
+      "uri" : "spotify:track:2v1EKQQn4UYC6qB13Vphaf"
+    } ],
+    "limit" : 3,
+    "next" : "https://api.spotify.com/v1/search?query=fantasias+&type=track&offset=3&limit=3",
+    "offset" : 0,
+    "previous" : null,
+    "total" : 925
+  }
+}

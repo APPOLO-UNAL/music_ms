@@ -40,7 +40,7 @@ type SpotifyResponse struct {
 					Height int    `json:"height"`
 					Width  int    `json:"width"`
 					URL    string `json:"url"`
-				} `json:"imagesFr"`
+				} `json:"images"`
 				Name                 string `json:"name"`
 				ReleaseDate          string `json:"release_date"`
 				ReleaseDatePrecision string `json:"release_date_precision"`
@@ -68,26 +68,6 @@ type SpotifyResponse struct {
 			} `json:"external_urls"`
 		} `json:"items"`
 	} `json:"tracks"`
-	Albums struct {
-		Href  string `json:"href"`
-		Total int    `json:"total"`
-		Items []struct {
-			AlbumType    string `json:"album_type"`
-			TotalTracks  int    `json:"total_tracks"`
-			ExternalUrls struct {
-				Spotify string `json:"spotify"`
-			} `json:"external_urls"`
-			Href   string `json:"href"`
-			ID     string `json:"id"`
-			Images []struct {
-				Height int    `json:"height"`
-				Width  int    `json:"width"`
-				URL    string `json:"url"`
-			} `json:"images"`
-			ReleaseDate          string `json:"release_date"`
-			ReleaseDatePrecision string `json:"release_date_precision"`
-		} `json:"items"`
-	} `json:"albums"`
 }
 
 // NewTrackRepository returns a new TrackRepository
@@ -454,6 +434,7 @@ func (repo *Repository) GetTrackByName(name string) (SpotifyResponse, error) {
 	defer res.Body.Close()
 	// Read the response
 	body, err := ioutil.ReadAll(res.Body)
+
 	if err != nil {
 		return SpotifyResponse{}, err
 	}
