@@ -160,6 +160,6 @@ func buildEndpointMusic(router *chi.Mux, hd handler.TrackHandler) {
 		r.Get("/music/releasedate", hdMusic.GetAllTrackByReleaseDate())
 		// Endpoint to get the information about the artist
 		r.Get("/music/artist", hdMusic.GetAllArtist())
-
+		r.Get("/id", hd.GetID())
 	})
 }

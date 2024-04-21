@@ -245,3 +245,49 @@ func (t TrackHandler) GetAllArtist() http.HandlerFunc {
 		response.JSON(w, http.StatusOK, artistList)
 	}
 }
+
+func (t TrackHandler) GetID() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Bussiness logic
+		trackID := r.URL.Query().Get("track")
+		albumID := r.URL.Query().Get("album")
+		artistID := r.URL.Query().Get("artist")
+
+		if trackID != "" && albumID == "" && artistID == "" {
+			track, err := t.TrackService.GetTrackByID(trackID)
+			fmt.Println("error track", err)
+			if err != nil {
+				response.Error(w, http.StatusInternalServerError, err.Error())
+				return
+			}
+			response.JSON(w, http.StatusOK, track)
+			return
+		}
+
+		if trackID == "" && albumID != "" && artistID == "" {
+			album, err := t.TrackService.GetAlbumByID(albumID)
+			fmt.Println("error album", err)
+			if err != nil {
+				response.Error(w, http.StatusInternalServerError, err.Error())
+				return
+			}
+			response.JSON(w, http.StatusOK, album)
+			return
+		}
+
+		if trackID == "" && albumID == "" && artistID != "" {
+			artist, err := t.TrackService.GetArtistByID(artistID)
+			fmt.Println("error artist", err)
+			if err != nil {
+				response.Error(w, http.StatusInternalServerError, err.Error())
+				return
+			}
+			response.JSON(w, http.StatusOK, artist)
+			return
+		}
+		fmt.Println("error paso")
+		// Return the artists
+		response.Error(w, http.StatusInternalServerError, "Internal Server Error")
+
+	}
+}

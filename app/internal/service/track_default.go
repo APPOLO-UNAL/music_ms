@@ -242,3 +242,39 @@ func (sv *TrackService) GetAllArtist(name string) (interface{}, error) {
 	}
 	return trackList, nil
 }
+
+func (sv *TrackService) GetTrackByID(trackID string) (interface{}, error) {
+	// Bussiness logic ...
+
+	// Get all tracks from the database
+	trackList, err := sv.rp.GetByID("tracks", trackID)
+	if err != nil {
+		return nil, internal.ErrInternalServerError
+	}
+
+	return trackList, nil
+}
+
+func (sv *TrackService) GetAlbumByID(albumID string) (interface{}, error) {
+	// Bussiness logic ...
+
+	// Get all tracks from the database
+	trackList, err := sv.rp.GetByID("albums", albumID)
+	if err != nil {
+		return nil, internal.ErrInternalServerError
+	}
+
+	return trackList, nil
+}
+
+func (sv *TrackService) GetArtistByID(artistID string) (interface{}, error) {
+	// Bussiness logic ...
+
+	// Get all tracks from the database
+	trackList, err := sv.rp.GetByID("artists", artistID)
+	if err != nil {
+		return nil, internal.ErrInternalServerError
+	}
+
+	return trackList, nil
+}

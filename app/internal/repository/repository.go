@@ -23,6 +23,58 @@ type Repository struct {
 	boolMapped bool                  // Bool to check if the mapping is already done
 }
 
+type AlbumResponse struct {
+	AlbumType string `json:"album_type"`
+	Artists   []struct {
+		ExternalUrls struct {
+			Spotify string `json:"spotify"`
+		} `json:"external_urls"`
+		Href string `json:"href"`
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"artists"`
+	ExternalURLs struct {
+		Spotify string `json:"spotify"`
+	} `json:"external_urls"`
+	Genres []string `json:"genres"`
+	Href   string   `json:"href"`
+	ID     string   `json:"id"`
+	Images []struct {
+		Height int    `json:"height"`
+		URL    string `json:"url"`
+		Width  int    `json:"width"`
+	} `json:"images"`
+	Name        string `json:"name"`
+	Popularity  int    `json:"popularity"`
+	ReleaseDate string `json:"release_date"`
+	TotalTracks int    `json:"total_tracks"`
+	Tracks      struct {
+		Href  string `json:"href"`
+		Items []struct {
+			Artists []struct {
+				ExternalUrls struct {
+					Spotify string `json:"spotify"`
+				} `json:"external_urls"`
+				Href string `json:"href"`
+				ID   string `json:"id"`
+				Name string `json:"name"`
+			} `json:"artists"`
+			DiscNumber   int `json:"disc_number"`
+			DurationMS   int `json:"duration_ms"`
+			ExternalURLs struct {
+				Spotify string `json:"spotify"`
+			} `json:"external_urls"`
+			Href        string `json:"href"`
+			ID          string `json:"id"`
+			Name        string `json:"name"`
+			TrackNumber int    `json:"track_number"`
+		} `json:"items"`
+		Total int `json:"total"`
+	} `json:"tracks"`
+	Type string `json:"type"`
+	URI  string `json:"uri"`
+}
+
 // SpotifyResponse is the response from spotify
 type SpotifyResponse struct {
 	Tracks struct {
@@ -958,4 +1010,33 @@ func (repo *Repository) GetAllArtistElasticSearch(indexName string, nameArtist s
 	}
 
 	return artists, nil
+}
+
+func (repo *Repository) GetByID(value string, id string) (AlbumResponse, error) {
+	req, err := http.NewRequest("GET", "https://api.spotify.com/v1/"+value+"/"+id, nil)
+	if err != nil {
+		return AlbumResponse{}, err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+repo.authToken)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return AlbumResponse{}, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return AlbumResponse{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return AlbumResponse{}, err
+	}
+	var spotifyResponses AlbumResponse
+	err = json.Unmarshal(body, &spotifyResponses)
+	if err != nil {
+		return AlbumResponse{}, err
+	}
+
+	return spotifyResponses, nil
 }
