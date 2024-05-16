@@ -72,11 +72,11 @@ func send(title, body, id_user string) error {
 	return nil
 }
 
-func main() {
-	// Send a message
-	err := send("Title", "Body", "1")
-	if err != nil {
-		log.Panicf("Error: %s", err)
-	}
+// func main() {
+// 	// Send a message
+// 	err := send("Title", "Body", "1")
+// 	if err != nil {
+// 		log.Panicf("Error: %s", err)
+// 	}
 
-}
+// }
