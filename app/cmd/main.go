@@ -43,12 +43,4 @@ func main() {
 		fmt.Println("Error starting server:", err)
 	}
 
-	/*
-		fmt.Println("Server started successfully")
-		token, err := application.GetNewTokenSpotify(repository.Repository{})
-		if err != nil {
-			fmt.Println("Error getting Spotify token:", err)
-		} else {
-			fmt.Println("Spotify token:", token)
-		}*/
 }
