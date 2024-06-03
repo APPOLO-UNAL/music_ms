@@ -978,3 +978,7 @@ func (repo *Repository) GetAllArtistElasticSearch(indexName string, nameArtist s
 
 	return artists, nil
 }
+
+func (repo *Repository) GetES() *elasticsearch.Client {
+	return repo.es
+}

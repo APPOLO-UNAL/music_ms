@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"log"
 	"ms_music/app/internal"
 	"ms_music/app/internal/service"
 	"ms_music/app/platform/web/response"
@@ -243,5 +244,21 @@ func (t TrackHandler) GetAllArtist() http.HandlerFunc {
 		}
 		// Return the artists
 		response.JSON(w, http.StatusOK, artistList)
+	}
+}
+
+func (t TrackHandler) HealthCheck() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Health Check")
+
+		// API Key should have cluster monitoring rights
+		es := t.TrackService.GetES()
+		infores, err := es.Info()
+		if err != nil {
+			fmt.Println("Error getting response: ", err)
+			log.Fatalf("Error getting response: %s", err)
+			response.Error(w, http.StatusInternalServerError, "specific error message")
+		}
+		response.JSON(w, http.StatusOK, infores)
 	}
 }

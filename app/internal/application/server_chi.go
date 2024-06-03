@@ -98,9 +98,8 @@ func (s *ConfigServerChi) Run() (err error) {
 	// Depedencies
 	// - Database Connection
 	cfg := elasticsearch.Config{
-		Addresses: []string{
-			"http://elasticsearch:9200",
-		},
+		CloudID: "appolo:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJDY2MDUyOWYxNjdiOTQ3NjQ5MDA3MmMzZGFlNzI4YjRkJDA2M2E1MWU0YzM4ZjRjNjhiMjhjMDAyMzIyOWUwOGQ4",
+		APIKey:  "aVlKRjRJOEI3MndYRF9jQ2ZISEY6eHNSaXdJZ0RTYTZ4eHVoRFNYM2oyUQ==",
 	}
 	es, err := elasticsearch.NewClient(cfg)
 	if err != nil {
@@ -146,6 +145,7 @@ func buildEndpointMusic(router *chi.Mux, hd handler.TrackHandler) {
 
 	// Router group for the music
 	router.Route("/api/v1", func(r chi.Router) {
+		r.Get("/health", hdMusic.HealthCheck())
 		// Endpoint to get the track by name
 		r.Get("/music", hdMusic.GetTrackByName())
 		// Endpoint to get the music

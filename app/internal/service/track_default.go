@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"github.com/elastic/go-elasticsearch/v7"
 	"ms_music/app/internal"
 	"ms_music/app/internal/repository"
 )
@@ -17,6 +18,10 @@ func NewTrackService(trackRepository repository.Repository) TrackService {
 	return TrackService{
 		rp: trackRepository,
 	}
+}
+
+func (sv *TrackService) GetES() *elasticsearch.Client {
+	return sv.rp.GetES()
 }
 
 // Get a track by name

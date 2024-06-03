@@ -47,6 +47,6 @@ This README provides detailed endpoints for managing artists, albums, and tracks
 
 1. `colima start` 
 2. `docker build -t dockerfile .`
-3. `docker-compose up`
+3. docker-compose up`
 4. `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}music_ms-elasticsearch-1 ``
 5.  Probar en postman
