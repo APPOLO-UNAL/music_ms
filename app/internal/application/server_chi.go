@@ -98,7 +98,7 @@ func (s *ConfigServerChi) Run() (err error) {
 	// Depedencies
 	// - Database Connection
 	cfg := elasticsearch.Config{
-		CloudID: "appolo:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJDY2MDUyOWYxNjdiOTQ3NjQ5MDA3MmMzZGFlNzI4YjRkJDA2M2E1MWU0YzM4ZjRjNjhiMjhjMDAyMzIyOWUwOGQ4",
+		CloudID: "appolo_escalamiento:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJGQ1MWViYWZiMGEyNDQ2OGQ5MDUzMWIwOWNkYWQ1NWFiJDJlYWRkYmQ5NzBhNTRjNGU4YWY1NzUyN2RiOWE0YmY1",
 		APIKey:  "aVlKRjRJOEI3MndYRF9jQ2ZISEY6eHNSaXdJZ0RTYTZ4eHVoRFNYM2oyUQ==",
 	}
 	es, err := elasticsearch.NewClient(cfg)
