@@ -3,9 +3,7 @@ services:
   app:
     build: .
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
       - SPOTIFY_CLIENT_ID=4bfedb806e3d49db9eeecfe03fe22057
       - SPOTIFY_CLIENT_SECRET=a7c80d1d7d664c058c876c6290fc04db
-
-

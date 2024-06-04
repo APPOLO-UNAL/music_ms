@@ -18,8 +18,8 @@ func main() {
 
 	// Empty config for now to use the default config
 	cfg := &application.ConfigServerChi{
-		Addr: ":8080",
-		Port: 8080,
+		Addr: ":8081",
+		Port: 8081,
 	}
 	server := application.NewServerChi(cfg)
 

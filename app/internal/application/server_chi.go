@@ -80,11 +80,11 @@ func GetNewTokenSpotify(rp *repository.Repository) (string, error) {
 func NewServerChi(cfg *ConfigServerChi) *ConfigServerChi {
 	// Default Config
 	defaultConf := &ConfigServerChi{
-		Addr:         ":8080",
+		Addr:         ":8081",
 		ReadTimeout:  5,
 		WriteTimeout: 10,
 		IdleTimeout:  15,
-		Port:         8080,
+		Port:         8081,
 	}
 	if cfg != nil {
 		defaultConf = cfg
@@ -133,7 +133,7 @@ func (s *ConfigServerChi) Run() (err error) {
 	// - Endpoints Music
 	buildEndpointMusic(router, hd)
 
-	err = http.ListenAndServe(":8080", router)
+	err = http.ListenAndServe(":8081", router)
 	return
 }
 
